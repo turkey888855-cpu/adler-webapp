@@ -43,7 +43,7 @@ async function loadTours() {
     const tours = await res.json();
     renderTours(tours);
   } catch (e) {
-    console.error(e);
+    console.error("Ошибка загрузки туров:", e);
     toursErrorEl.textContent = "Не удалось загрузить туры. Попробуйте позже.";
     toursErrorEl.classList.remove("hidden");
   } finally {
@@ -106,7 +106,7 @@ function openBookingForm(tour) {
   bookingErrorEl.classList.add("hidden");
   bookingSuccessEl.classList.add("hidden");
 
-  // Предзаполним имя, если есть в Telegram
+  // Предзаполним имя из Telegram, если есть
   if (user) {
     const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
     if (fullName && !clientNameInput.value) {
@@ -144,9 +144,11 @@ bookingFormEl.addEventListener("submit", async (e) => {
     return;
   }
 
+  const isoDate = new Date(date_time).toISOString(); // '2026-01-06T04:06:00.000Z'
+
   const payload = {
     tour_id,
-    date_time: new Date(date_time).toISOString(), // в ISO-формат
+    date_time: isoDate,
     people_count,
     client_name,
     client_phone,
@@ -154,6 +156,8 @@ bookingFormEl.addEventListener("submit", async (e) => {
     telegram_user_id: user ? user.id : null,
     telegram_username: user ? user.username : null,
   };
+
+  console.log("Отправляем заявку:", payload);
 
   submitButton.disabled = true;
   submitButton.textContent = "Отправляем...";
@@ -168,15 +172,15 @@ bookingFormEl.addEventListener("submit", async (e) => {
     });
 
     if (!res.ok) {
-      const errData = await res.json().catch(() => null);
-      const detail =
-        errData && errData.detail
-          ? JSON.stringify(errData.detail)
-          : `Код ${res.status}`;
-      throw new Error(`Ошибка бронирования: ${detail}`);
+      // Пытаемся прочитать тело ошибки
+      const errText = await res.text();
+      throw new Error(
+        `Ошибка бронирования: статус ${res.status}. Ответ: ${errText}`
+      );
     }
 
     const data = await res.json();
+    console.log("Ответ бронирования:", data);
 
     bookingSuccessEl.textContent =
       "Заявка отправлена! Ожидайте подтверждения в этом чате.";
@@ -187,9 +191,9 @@ bookingFormEl.addEventListener("submit", async (e) => {
       tg.close();
     }, 1500);
   } catch (e) {
-    console.error(e);
+    console.error("Ошибка при бронировании:", e);
     bookingErrorEl.textContent =
-      "Не удалось отправить заявку. Попробуйте ещё раз позже.";
+      e.message || "Не удалось отправить заявку. Попробуйте ещё раз позже.";
     bookingErrorEl.classList.remove("hidden");
   } finally {
     submitButton.disabled = false;
