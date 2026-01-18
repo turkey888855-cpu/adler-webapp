@@ -1,105 +1,332 @@
+:root {
+    --bg: #020617;
+    --bg-elevated: #020617;
+    --panel: #020617;
+    --panel-soft: #0b1220;
+    --panel-strong: #020617;
+    --accent: #38bdf8;
+    --accent-soft: #0ea5e9;
+    --accent-strong: #0284c7;
+    --success: #22c55e;
+    --error: #f97373;
+    --text-main: #e5e7eb;
+    --text-muted: #9ca3af;
+    --border-soft: rgba(148, 163, 184, 0.4);
+    --radius-lg: 16px;
+    --shadow: 0 18px 40px rgba(15, 23, 42, 0.75);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #0f172a;
-  color: #e5e7eb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.16), transparent 60%),
+        #020617;
+    color: var(--text-main);
 }
 
-#app {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 16px;
+/* Общая оболочка */
+
+.app-shell {
+    max-width: 900px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 12px 12px 18px;
 }
 
-h1, h2 {
-  margin-top: 0;
-  color: #f9fafb;
+/* Шапка */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.65));
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    margin-bottom: 14px;
+}
+
+.brand-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 20% 20%, var(--accent), var(--accent-strong));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: #0b1120;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.6);
+}
+
+.brand-text h1 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.brand-text p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Основной контент */
+
+.app-main {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section {
+    background: radial-gradient(circle at top, rgba(30, 64, 175, 0.3), transparent 60%),
+                radial-gradient(circle at bottom, rgba(8, 47, 73, 0.65), transparent 60%),
+                #020617;
+    border-radius: var(--radius-lg);
+    padding: 14px 14px 18px;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    box-shadow: var(--shadow);
+}
+
+/* Заголовки секций */
+
+.section-header h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+
+.section-header p {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Статусы */
+
+.status-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.status-text--error {
+    color: var(--error);
+}
+
+/* Сетка туров */
+
+.tours-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
 }
 
 .tour-card {
-  border: 1px solid #1f2937;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 10px;
-  background: #111827;
+    position: relative;
+    border-radius: 14px;
+    padding: 10px 10px 12px;
+    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 55%),
+                linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.85));
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.8);
 }
 
 .tour-title {
-  font-weight: 600;
-  margin-bottom: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
 }
 
 .tour-meta {
-  font-size: 0.9rem;
-  color: #9ca3af;
+    font-size: 12px;
+    color: var(--accent-soft);
+    margin-bottom: 6px;
 }
 
 .tour-description {
-  font-size: 0.95rem;
-  margin: 6px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
 }
 
 .tour-actions {
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 
-button {
-  border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
-  background: #3b82f6;
-  color: #f9fafb;
-  cursor: pointer;
-  font-size: 0.95rem;
+/* Кнопки */
+
+.btn {
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 999px;
+    padding: 7px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
-button:hover {
-  background: #2563eb;
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color: #0b1120;
+    box-shadow: 0 12px 24px rgba(56, 189, 248, 0.45);
 }
 
-.field {
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 6px 12px rgba(15, 23, 42, 0.9);
 }
 
-.field label {
-  font-size: 0.9rem;
-  margin-bottom: 4px;
+.btn-secondary {
+    background: rgba(15, 23, 42, 0.8);
+    color: var(--text-main);
+    border: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+/* Бронирование */
+
+.booking {
+    position: relative;
+}
+
+.back-link {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 13px;
+    padding: 0;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.booking-card {
+    background: radial-gradient(circle at top, rgba(15, 118, 110, 0.4), transparent 60%),
+                linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9));
+    border-radius: var(--radius-lg);
+    padding: 14px 12px 14px;
+    border: 1px solid rgba(45, 212, 191, 0.5);
+    box-shadow: var(--shadow);
+}
+
+.booking-title {
+    margin: 0 0 4px;
+    font-size: 17px;
+}
+
+.booking-subtitle {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Форма */
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-label {
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 .field input,
 .field textarea {
-  border-radius: 6px;
-  border: 1px solid #4b5563;
-  padding: 6px 8px;
-  background: #020617;
-  color: #e5e7eb;
+    width: 100%;
+    padding: 7px 9px;
+    border-radius: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--text-main);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .field input:focus,
 .field textarea:focus {
-  outline: 1px solid #3b82f6;
+    border-color: var(--accent-soft);
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.55);
+    background: rgba(15, 23, 42, 0.95);
 }
 
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 10px;
+.field textarea {
+    min-height: 60px;
+    resize: vertical;
 }
 
-.error {
-  color: #f97373;
-  font-size: 0.9rem;
+/* Ошибки / успех */
+
+.form-alert {
+    font-size: 12px;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-top: 4px;
 }
 
-.success {
-  color: #4ade80;
-  font-size: 0.9rem;
+.form-alert--error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fecaca;
+    border: 1px solid rgba(239, 68, 68, 0.6);
 }
+
+.form-alert--success {
+    background: rgba(34, 197, 94, 0.16);
+    color: #bbf7d0;
+    border: 1px solid rgba(34, 197, 94, 0.6);
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* Утилиты */
 
 .hidden {
-  display: none;
+    display: none !important;
+}
+
+/* Адаптив */
+
+@media (min-width: 640px) {
+    .tours-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 900px) {
+    .tours-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
