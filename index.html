@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Стили -->
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body class="theme-dark">
 <div class="app">
 
-    <!-- HEADER / БРЕНД -->
+    <!-- HEADER / Бренд + переключатель темы -->
     <header class="app-header">
         <div class="brand">
             <div class="brand-logo">AT</div>
@@ -42,11 +42,11 @@
             <div id="tours-error" class="status-text status-text--error hidden"></div>
 
             <div id="tours-list" class="tours-grid">
-                <!-- Карточки создаёт app.js -->
+                <!-- Карточки туров рендерит app.js -->
             </div>
         </section>
 
-        <!-- ПАНЕЛЬ БРОНИРОВАНИЯ (слайд вверх) -->
+        <!-- ПАНЕЛЬ БРОНИРОВАНИЯ (выезжает снизу) -->
         <section id="booking-container" class="booking-overlay hidden">
             <div class="booking-backdrop"></div>
             <article class="booking-panel">
@@ -60,9 +60,28 @@
                 </header>
 
                 <div class="booking-panel-body">
+                    <!-- Мини-карточка выбранного тура -->
+                    <div class="booking-summary">
+                        <div class="booking-summary-image">
+                            <img id="booking-tour-image" src="img/default-tour.jpg" alt="">
+                        </div>
+                        <div class="booking-summary-info">
+                            <div class="booking-summary-type" id="booking-tour-type">Тур</div>
+                            <div class="booking-summary-meta" id="booking-tour-meta">—</div>
+                            <div class="booking-summary-desc" id="booking-tour-desc">
+                                Краткое описание тура.
+                            </div>
+                        </div>
+                    </div>
+
                     <p class="booking-intro">
                         Оставьте контакты и желаемое время — мы свяжемся с вами для подтверждения и ответим на вопросы.
                     </p>
+
+                    <!-- progress заполнения -->
+                    <div class="booking-progress">
+                        <div class="booking-progress-bar" id="booking-progress-bar"></div>
+                    </div>
 
                     <form id="booking-form" class="booking-form">
                         <input type="hidden" id="tour_id" name="tour_id">
@@ -85,7 +104,7 @@
                             <label class="field">
                                 <span class="field-label">Ваше имя</span>
                                 <input type="text" id="client_name" name="client_name"
-                                       placeholder="Как к вам обращаться" required>
+                                       placeholder="Например: Артур" required>
                             </label>
                         </div>
 
@@ -93,16 +112,22 @@
                             <label class="field">
                                 <span class="field-label">Телефон</span>
                                 <input type="tel" id="client_phone" name="client_phone"
-                                       placeholder="+7 ___ ___‑__‑__" required>
+                                       placeholder="+7 918 205‑87‑32" required>
                             </label>
+                            <div class="field-hint">
+                                Пример: +7 9ХХ ХХХ‑ХХ‑ХХ — мы перезвоним или напишем в мессенджер.
+                            </div>
                         </div>
 
                         <div class="form-row">
                             <label class="field">
                                 <span class="field-label">Комментарий</span>
                                 <textarea id="comment" name="comment"
-                                          placeholder="Пожелания, дети, особенности и т.п."></textarea>
+                                          placeholder="Например: 2 взрослых и ребёнок, хотим трансфер от отеля."></textarea>
                             </label>
+                            <div class="field-hint">
+                                Можете указать пожелания: состав группы, трансфер, особые требования.
+                            </div>
                         </div>
 
                         <div id="booking-error" class="form-alert form-alert--error hidden"></div>
@@ -127,7 +152,7 @@
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!-- Логика приложения -->
-<script src="app.js?v=10"></script>
+<script src="app.js?v=20"></script>
 <script>
     // Кнопка "Назад к каталогу" внизу формы
     document.getElementById('back-button-duplicate').addEventListener('click', () => {
