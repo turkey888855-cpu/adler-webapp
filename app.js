@@ -144,7 +144,8 @@ bookingFormEl.addEventListener("submit", async (e) => {
     return;
   }
 
-  const isoDate = new Date(date_time).toISOString(); // '2026-01-06T04:06:00.000Z'
+  // Преобразуем в ISO-формат, который понимает FastAPI
+  const isoDate = new Date(date_time).toISOString();
 
   const payload = {
     tour_id,
@@ -172,7 +173,7 @@ bookingFormEl.addEventListener("submit", async (e) => {
     });
 
     if (!res.ok) {
-      // Пытаемся прочитать тело ошибки
+      // читаем текст ошибки от сервера
       const errText = await res.text();
       throw new Error(
         `Ошибка бронирования: статус ${res.status}. Ответ: ${errText}`
@@ -186,7 +187,6 @@ bookingFormEl.addEventListener("submit", async (e) => {
       "Заявка отправлена! Ожидайте подтверждения в этом чате.";
     bookingSuccessEl.classList.remove("hidden");
 
-    // Через пару секунд закрываем WebApp
     setTimeout(() => {
       tg.close();
     }, 1500);
