@@ -1,10 +1,14 @@
 // URL бекенда
 const BACKEND_URL = "https://adler-backend.onrender.com";
 
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
+// Telegram WebApp
+const tg = window.Telegram.WebApp || null;
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
 
+// Элементы DOM
 const toursListEl = document.getElementById("tours-list");
 const toursLoadingEl = document.getElementById("tours-loading");
 const toursErrorEl = document.getElementById("tours-error");
@@ -26,8 +30,16 @@ const bookingSuccessEl = document.getElementById("booking-success");
 const backButton = document.getElementById("back-button");
 const submitButton = document.getElementById("submit-button");
 
-// Сохраним данные пользователя из Telegram
-const user = tg.initDataUnsafe?.user || null;
+// Данные пользователя из Telegram (если есть)
+const user = tg?.initDataUnsafe?.user || null;
+
+// Картинки для разных типов туров
+const TOUR_IMAGES = {
+  jeeping: "img/jeeping.jpg",      // джиппинг
+  yacht: "img/yacht.jpg",          // яхта / море
+  excursion: "img/excursion.jpg"   // обзорные экскурсии
+};
+const DEFAULT_IMAGE = "img/default-tour.jpg";
 
 // ---------- ЗАГРУЗКА ТУРОВ ----------
 
@@ -50,13 +62,6 @@ async function loadTours() {
     toursLoadingEl.classList.add("hidden");
   }
 }
-// Картинки для типов туров (положи файлы в папку img)
-const TOUR_IMAGES = {
-  jeeping: "img/jeeping.jpg",
-  yacht: "img/yacht.jpg",
-  excursion: "img/excursion.jpg",
-};
-const DEFAULT_IMAGE = "img/default-tour.jpg";
 
 function renderTours(tours) {
   toursListEl.innerHTML = "";
@@ -70,7 +75,7 @@ function renderTours(tours) {
     const card = document.createElement("article");
     card.className = "tour-card";
 
-    // Блок с фото
+    // Фото
     const imageWrap = document.createElement("div");
     imageWrap.className = "tour-image";
 
@@ -124,49 +129,17 @@ function renderTours(tours) {
     toursListEl.appendChild(card);
   });
 }
-    title.className = "tour-title";
-    title.textContent = tour.title;
 
-    const meta = document.createElement("div");
-    meta.className = "tour-meta";
-    const price = tour.price_from ? `${tour.price_from} ₽` : "Цена по запросу";
-    const duration = tour.duration_hours
-      ? `${tour.duration_hours} ч`
-      : "Длительность не указана";
-    meta.textContent = `${price} · ${duration}`;
-
-    const desc = document.createElement("div");
-    desc.className = "tour-description";
-    desc.textContent = tour.description || "";
-
-    const actions = document.createElement("div");
-    actions.className = "tour-actions";
-
-    const btn = document.createElement("button");
-    btn.textContent = "Забронировать";
-    btn.onclick = () => openBookingForm(tour);
-
-    actions.appendChild(btn);
-
-    card.appendChild(title);
-    card.appendChild(meta);
-    if (tour.description) card.appendChild(desc);
-    card.appendChild(actions);
-
-    toursListEl.appendChild(card);
-  });
-}
-
-// ---------- ФОРМА БРОНИ ----------
+// ---------- ОТКРЫТЬ ФОРМУ БРОНИ ----------
 
 function openBookingForm(tour) {
   tourIdInput.value = tour.id;
-  bookingTitleEl.textContent = `Бронирование: ${tour.title}`;
+  bookingTitleEl.textContent = tour.title;
 
   bookingErrorEl.classList.add("hidden");
   bookingSuccessEl.classList.add("hidden");
 
-  // Предзаполним имя из Telegram, если есть
+  // Предзаполняем имя из Telegram, если оно есть
   if (user) {
     const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
     if (fullName && !clientNameInput.value) {
@@ -204,12 +177,10 @@ bookingFormEl.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Преобразуем в ISO-формат, который понимает FastAPI
-  const isoDate = new Date(date_time).toISOString();
-
+  // Отправляем строку datetime-local как есть — Pydantic сам разберёт
   const payload = {
     tour_id,
-    date_time: isoDate,
+    date_time,
     people_count,
     client_name,
     client_phone,
@@ -233,7 +204,6 @@ bookingFormEl.addEventListener("submit", async (e) => {
     });
 
     if (!res.ok) {
-      // читаем текст ошибки от сервера
       const errText = await res.text();
       throw new Error(
         `Ошибка бронирования: статус ${res.status}. Ответ: ${errText}`
@@ -244,12 +214,15 @@ bookingFormEl.addEventListener("submit", async (e) => {
     console.log("Ответ бронирования:", data);
 
     bookingSuccessEl.textContent =
-      "Заявка отправлена! Ожидайте подтверждения в этом чате.";
+      "Заявка отправлена! Мы скоро свяжемся с вами и подтвердим бронирование.";
     bookingSuccessEl.classList.remove("hidden");
 
-    setTimeout(() => {
-      tg.close();
-    }, 1500);
+    // Закрываем WebApp в Telegram через пару секунд
+    if (tg) {
+      setTimeout(() => {
+        tg.close();
+      }, 2000);
+    }
   } catch (e) {
     console.error("Ошибка при бронировании:", e);
     bookingErrorEl.textContent =
@@ -261,5 +234,6 @@ bookingFormEl.addEventListener("submit", async (e) => {
   }
 });
 
-// Старт
+// ---------- СТАРТ ----------
+
 loadTours();
