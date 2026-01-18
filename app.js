@@ -50,6 +50,13 @@ async function loadTours() {
     toursLoadingEl.classList.add("hidden");
   }
 }
+// Картинки для типов туров (положи файлы в папку img)
+const TOUR_IMAGES = {
+  jeeping: "img/jeeping.jpg",
+  yacht: "img/yacht.jpg",
+  excursion: "img/excursion.jpg",
+};
+const DEFAULT_IMAGE = "img/default-tour.jpg";
 
 function renderTours(tours) {
   toursListEl.innerHTML = "";
@@ -60,10 +67,63 @@ function renderTours(tours) {
   }
 
   tours.forEach((tour) => {
-    const card = document.createElement("div");
+    const card = document.createElement("article");
     card.className = "tour-card";
 
+    // Блок с фото
+    const imageWrap = document.createElement("div");
+    imageWrap.className = "tour-image";
+
+    const img = document.createElement("img");
+    img.src = TOUR_IMAGES[tour.type] || DEFAULT_IMAGE;
+    img.alt = tour.title;
+    imageWrap.appendChild(img);
+
+    const overlay = document.createElement("div");
+    overlay.className = "tour-image-overlay";
+    imageWrap.appendChild(overlay);
+
+    // Контент
+    const content = document.createElement("div");
+    content.className = "tour-content";
+
     const title = document.createElement("div");
+    title.className = "tour-title";
+    title.textContent = tour.title;
+
+    const meta = document.createElement("div");
+    meta.className = "tour-meta";
+    const price = tour.price_from ? `${tour.price_from} ₽` : "Цена по запросу";
+    const duration = tour.duration_hours
+      ? `${tour.duration_hours} ч`
+      : "Длительность не указана";
+    meta.textContent = `${price} · ${duration}`;
+
+    const desc = document.createElement("div");
+    desc.className = "tour-description";
+    desc.textContent = tour.description || "";
+
+    const actions = document.createElement("div");
+    actions.className = "tour-actions";
+
+    const btn = document.createElement("button");
+    btn.textContent = "Забронировать";
+    btn.className = "btn btn-primary";
+    btn.onclick = () => openBookingForm(tour);
+
+    actions.appendChild(btn);
+
+    content.appendChild(title);
+    content.appendChild(meta);
+    if (tour.description) content.appendChild(desc);
+    content.appendChild(actions);
+
+    card.appendChild(imageWrap);
+    card.appendChild(content);
+
+    toursListEl.appendChild(card);
+  });
+}
     title.className = "tour-title";
     title.textContent = tour.title;
 
