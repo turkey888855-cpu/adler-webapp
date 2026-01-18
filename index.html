@@ -1,64 +1,118 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Adler Tours</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Telegram WebApp JS -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <title>Adler Tours — каталог и бронирование</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Можно оставить без внешних шрифтов, чтобы в Telegram всё грузилось быстро -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
-    <h1>Каталог туров</h1>
+<div class="app-shell">
 
-    <div id="tours-container">
-      <p id="tours-loading">Загрузка туров...</p>
-      <div id="tours-list"></div>
-      <p id="tours-error" class="error hidden"></p>
-    </div>
-
-    <div id="booking-container" class="hidden">
-      <h2 id="booking-title">Бронирование тура</h2>
-      <form id="booking-form">
-        <input type="hidden" id="tour_id" />
-
-        <div class="field">
-          <label for="date_time">Дата и время:</label>
-          <input type="datetime-local" id="date_time" required />
+    <!-- Верхняя панель / бренд -->
+    <header class="app-header">
+        <div class="brand-mark">AT</div>
+        <div class="brand-text">
+            <h1>Adler Tours</h1>
+            <p>Премиальные экскурсии и прогулки по морю</p>
         </div>
+    </header>
 
-        <div class="field">
-          <label for="people_count">Количество человек:</label>
-          <input type="number" id="people_count" min="1" value="1" required />
-        </div>
+    <main class="app-main">
+        <!-- КАТАЛОГ ТУРОВ -->
+        <section id="tours-container" class="section">
+            <div class="section-header">
+                <h2>Каталог туров</h2>
+                <p>Выберите тур и забронируйте удобное время. Мы перезвоним для подтверждения.</p>
+            </div>
 
-        <div class="field">
-          <label for="client_name">Ваше имя:</label>
-          <input type="text" id="client_name" required />
-        </div>
+            <div id="tours-loading" class="status-text">Загружаем предложения…</div>
+            <div id="tours-error" class="status-text status-text--error hidden"></div>
 
-        <div class="field">
-          <label for="client_phone">Телефон:</label>
-          <input type="tel" id="client_phone" required />
-        </div>
+            <div id="tours-list" class="tours-grid">
+                <!-- Карточки туров создаёт app.js -->
+            </div>
+        </section>
 
-        <div class="field">
-          <label for="comment">Комментарий:</label>
-          <textarea id="comment" rows="3" placeholder="Пожелания, дети, и т.п."></textarea>
-        </div>
+        <!-- ФОРМА БРОНИРОВАНИЯ -->
+        <section id="booking-container" class="section booking hidden">
+            <button id="back-button" type="button" class="back-link">
+                ← Вернуться к каталогу
+            </button>
 
-        <div id="booking-error" class="error hidden"></div>
-        <div id="booking-success" class="success hidden"></div>
+            <div class="booking-card">
+                <h2 id="booking-title" class="booking-title">Бронирование тура</h2>
+                <p class="booking-subtitle">
+                    Укажите удобное время и свои контакты — мы свяжемся с вами для подтверждения деталей.
+                </p>
 
-        <div class="buttons">
-          <button type="button" id="back-button">Назад к списку</button>
-          <button type="submit" id="submit-button">Отправить заявку</button>
-        </div>
-      </form>
-    </div>
-  </div>
+                <form id="booking-form" class="booking-form">
+                    <!-- скрытый id тура -->
+                    <input type="hidden" id="tour_id" name="tour_id">
 
- <script src="app.js?v=2"></script>
+                    <div class="form-row">
+                        <label class="field">
+                            <span class="field-label">Дата и время</span>
+                            <input type="datetime-local" id="date_time" name="date_time" required>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="field">
+                            <span class="field-label">Количество человек</span>
+                            <input type="number" id="people_count" name="people_count" min="1" value="1" required>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="field">
+                            <span class="field-label">Ваше имя</span>
+                            <input type="text" id="client_name" name="client_name" placeholder="Как к вам обращаться" required>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="field">
+                            <span class="field-label">Телефон</span>
+                            <input type="tel" id="client_phone" name="client_phone" placeholder="+7 ___ ___‑__‑__" required>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="field">
+                            <span class="field-label">Комментарий</span>
+                            <textarea id="comment" name="comment" placeholder="Пожелания, дети, особенности, и т.п."></textarea>
+                        </label>
+                    </div>
+
+                    <div id="booking-error" class="form-alert form-alert--error hidden"></div>
+                    <div id="booking-success" class="form-alert form-alert--success hidden"></div>
+
+                    <div class="form-actions">
+                        <button type="button" id="back-button-duplicate" class="btn btn-secondary">
+                            Назад к каталогу
+                        </button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">
+                            Отправить заявку
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Telegram WebApp SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Ваш рабочий JS с логикой загрузки туров и бронирования -->
+<script src="app.js?v=3"></script>
+<script>
+    // Дублируем действие "Назад" для кнопки внизу формы
+    document.getElementById('back-button-duplicate').addEventListener('click', () => {
+        document.getElementById('booking-container').classList.add('hidden');
+        document.getElementById('tours-container').classList.remove('hidden');
+    });
+</script>
 </body>
 </html>
