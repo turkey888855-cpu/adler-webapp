@@ -8,7 +8,7 @@ if (tg) {
   tg.expand();
 }
 
-// Элементы DOM
+// DOM-элементы
 const toursListEl = document.getElementById("tours-list");
 const toursLoadingEl = document.getElementById("tours-loading");
 const toursErrorEl = document.getElementById("tours-error");
@@ -30,14 +30,26 @@ const bookingSuccessEl = document.getElementById("booking-success");
 const backButton = document.getElementById("back-button");
 const submitButton = document.getElementById("submit-button");
 
-// Данные пользователя из Telegram (если есть)
+// Элементы мини-карточки тура в брони
+const bookingTourImageEl = document.getElementById("booking-tour-image");
+const bookingTourTypeEl = document.getElementById("booking-tour-type");
+const bookingTourMetaEl = document.getElementById("booking-tour-meta");
+const bookingTourDescEl = document.getElementById("booking-tour-desc");
+const bookingProgressBarEl = document.getElementById("booking-progress-bar");
+
+// Пользователь из Telegram (если есть)
 const user = tg?.initDataUnsafe?.user || null;
 
-// Картинки для разных типов туров
+// Карты изображений и надписей типа тура
 const TOUR_IMAGES = {
-  jeeping: "img/jeeping.jpg",      // джиппинг
-  yacht: "img/yacht.jpg",          // яхта / море
-  excursion: "img/excursion.jpg"   // обзорные экскурсии
+  jeeping: "img/jeeping.jpg",
+  yacht: "img/yacht.jpg",
+  excursion: "img/excursion.jpg",
+};
+const TOUR_TYPE_LABEL = {
+  jeeping: "Джиппинг",
+  yacht: "Морская прогулка",
+  excursion: "Экскурсия",
 };
 const DEFAULT_IMAGE = "img/default-tour.jpg";
 
@@ -139,6 +151,27 @@ function openBookingForm(tour) {
   bookingErrorEl.classList.add("hidden");
   bookingSuccessEl.classList.add("hidden");
 
+  // Мини-карточка тура
+  const imgSrc = TOUR_IMAGES[tour.type] || DEFAULT_IMAGE;
+  if (bookingTourImageEl) {
+    bookingTourImageEl.src = imgSrc;
+    bookingTourImageEl.alt = tour.title;
+  }
+  if (bookingTourTypeEl) {
+    bookingTourTypeEl.textContent = TOUR_TYPE_LABEL[tour.type] || "Тур";
+  }
+  if (bookingTourMetaEl) {
+    const price = tour.price_from ? `${tour.price_from} ₽` : "Цена по запросу";
+    const duration = tour.duration_hours
+      ? `${tour.duration_hours} ч`
+      : "Длительность не указана";
+    bookingTourMetaEl.textContent = `${price} · ${duration}`;
+  }
+  if (bookingTourDescEl) {
+    bookingTourDescEl.textContent =
+      tour.description || "Выбран премиальный маршрут от Adler Tours.";
+  }
+
   // Предзаполняем имя из Telegram, если оно есть
   if (user) {
     const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
@@ -146,6 +179,10 @@ function openBookingForm(tour) {
       clientNameInput.value = fullName;
     }
   }
+
+  // Сбрасываем прогресс и состояния
+  updateProgress();
+  updateFieldStates();
 
   document.getElementById("tours-container").classList.add("hidden");
   bookingContainerEl.classList.remove("hidden");
@@ -155,6 +192,57 @@ backButton.addEventListener("click", () => {
   bookingContainerEl.classList.add("hidden");
   document.getElementById("tours-container").classList.remove("hidden");
 });
+
+// ---------- ЭФФЕКТЫ ПОЛЕЙ И ПРОГРЕСС ----------
+
+const requiredFields = [dateTimeInput, peopleCountInput, clientNameInput, clientPhoneInput];
+
+function attachFieldEffects() {
+  const allInputs = [dateTimeInput, peopleCountInput, clientNameInput, clientPhoneInput, commentInput];
+
+  allInputs.forEach((input) => {
+    if (!input) return;
+    input.addEventListener("focus", () => {
+      const field = input.closest(".field");
+      if (field) field.classList.add("field--focused");
+    });
+    input.addEventListener("blur", () => {
+      const field = input.closest(".field");
+      if (field) field.classList.remove("field--focused");
+    });
+    input.addEventListener("input", () => {
+      updateFieldStates();
+      updateProgress();
+    });
+  });
+
+  // начальное состояние
+  updateFieldStates();
+  updateProgress();
+}
+
+function updateFieldStates() {
+  const allInputs = [dateTimeInput, peopleCountInput, clientNameInput, clientPhoneInput, commentInput];
+  allInputs.forEach((input) => {
+    if (!input) return;
+    const field = input.closest(".field");
+    if (!field) return;
+    const hasValue = input.value && input.value.trim().length > 0;
+    field.classList.toggle("field--filled", !!hasValue);
+  });
+}
+
+function updateProgress() {
+  if (!bookingProgressBarEl) return;
+  let filled = 0;
+  requiredFields.forEach((input) => {
+    if (input && input.value && input.value.trim().length > 0) {
+      filled++;
+    }
+  });
+  const percent = (filled / requiredFields.length) * 100;
+  bookingProgressBarEl.style.width = `${percent}%`;
+}
 
 // ---------- ОТПРАВКА ЗАЯВКИ ----------
 
@@ -177,10 +265,9 @@ bookingFormEl.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Отправляем строку datetime-local как есть — Pydantic сам разберёт
   const payload = {
     tour_id,
-    date_time,
+    date_time, // строка формата datetime-local
     people_count,
     client_name,
     client_phone,
@@ -217,7 +304,6 @@ bookingFormEl.addEventListener("submit", async (e) => {
       "Заявка отправлена! Мы скоро свяжемся с вами и подтвердим бронирование.";
     bookingSuccessEl.classList.remove("hidden");
 
-    // Закрываем WebApp в Telegram через пару секунд
     if (tg) {
       setTimeout(() => {
         tg.close();
@@ -236,4 +322,5 @@ bookingFormEl.addEventListener("submit", async (e) => {
 
 // ---------- СТАРТ ----------
 
+attachFieldEffects();
 loadTours();
