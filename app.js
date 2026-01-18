@@ -30,17 +30,17 @@ const bookingSuccessEl = document.getElementById("booking-success");
 const backButton = document.getElementById("back-button");
 const submitButton = document.getElementById("submit-button");
 
-// Элементы мини-карточки тура в брони
+// Мини-карточка тура в форме
 const bookingTourImageEl = document.getElementById("booking-tour-image");
 const bookingTourTypeEl = document.getElementById("booking-tour-type");
 const bookingTourMetaEl = document.getElementById("booking-tour-meta");
 const bookingTourDescEl = document.getElementById("booking-tour-desc");
 const bookingProgressBarEl = document.getElementById("booking-progress-bar");
 
-// Пользователь из Telegram (если есть)
+// Пользователь Telegram (если есть)
 const user = tg?.initDataUnsafe?.user || null;
 
-// Карты изображений и надписей типа тура
+// Картинки и подписи типов туров
 const TOUR_IMAGES = {
   jeeping: "img/jeeping.jpg",
   yacht: "img/yacht.jpg",
@@ -87,7 +87,7 @@ function renderTours(tours) {
     const card = document.createElement("article");
     card.className = "tour-card";
 
-    // Фото
+    // Блок фото
     const imageWrap = document.createElement("div");
     imageWrap.className = "tour-image";
 
@@ -172,7 +172,7 @@ function openBookingForm(tour) {
       tour.description || "Выбран премиальный маршрут от Adler Tours.";
   }
 
-  // Предзаполняем имя из Telegram, если оно есть
+  // Предзаполнение имени из Telegram
   if (user) {
     const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
     if (fullName && !clientNameInput.value) {
@@ -180,9 +180,8 @@ function openBookingForm(tour) {
     }
   }
 
-  // Сбрасываем прогресс и состояния
-  updateProgress();
   updateFieldStates();
+  updateProgress();
 
   document.getElementById("tours-container").classList.add("hidden");
   bookingContainerEl.classList.remove("hidden");
@@ -216,7 +215,6 @@ function attachFieldEffects() {
     });
   });
 
-  // начальное состояние
   updateFieldStates();
   updateProgress();
 }
@@ -267,7 +265,7 @@ bookingFormEl.addEventListener("submit", async (e) => {
 
   const payload = {
     tour_id,
-    date_time, // строка формата datetime-local
+    date_time,
     people_count,
     client_name,
     client_phone,
