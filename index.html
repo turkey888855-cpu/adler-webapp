@@ -4,27 +4,35 @@
     <meta charset="UTF-8">
     <title>Adler Tours — каталог и бронирование</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Можно оставить без внешних шрифтов, чтобы в Telegram всё грузилось быстро -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body>
+<body class="theme-dark">
 <div class="app-shell">
 
-    <!-- Верхняя панель / бренд -->
+    <!-- Верхняя панель -->
     <header class="app-header">
-        <div class="brand-mark">AT</div>
-        <div class="brand-text">
-            <h1>Adler Tours</h1>
-            <p>Премиальные экскурсии и прогулки по морю</p>
+        <div class="brand">
+            <div class="brand-logo">AT</div>
+            <div class="brand-text">
+                <div class="brand-title">Adler Tours</div>
+                <div class="brand-subtitle">Эксклюзивные туры и морские прогулки</div>
+            </div>
         </div>
+
+        <button id="theme-toggle" type="button" class="theme-toggle">
+            <span class="theme-toggle-thumb"></span>
+            <span class="theme-toggle-label theme-toggle-label--dark">Ночь</span>
+            <span class="theme-toggle-label theme-toggle-label--light">День</span>
+        </button>
     </header>
 
     <main class="app-main">
+
         <!-- КАТАЛОГ ТУРОВ -->
-        <section id="tours-container" class="section">
+        <section id="tours-container" class="section section-tours">
             <div class="section-header">
-                <h2>Каталог туров</h2>
-                <p>Выберите тур и забронируйте удобное время. Мы перезвоним для подтверждения.</p>
+                <h1>Каталог туров</h1>
+                <p>Выберите маршрут, посмотрите описание и забронируйте удобное время.</p>
             </div>
 
             <div id="tours-loading" class="status-text">Загружаем предложения…</div>
@@ -36,19 +44,20 @@
         </section>
 
         <!-- ФОРМА БРОНИРОВАНИЯ -->
-        <section id="booking-container" class="section booking hidden">
-            <button id="back-button" type="button" class="back-link">
+        <section id="booking-container" class="section section-booking hidden">
+            <button id="back-button" type="button" class="link-back">
                 ← Вернуться к каталогу
             </button>
 
-            <div class="booking-card">
-                <h2 id="booking-title" class="booking-title">Бронирование тура</h2>
-                <p class="booking-subtitle">
-                    Укажите удобное время и свои контакты — мы свяжемся с вами для подтверждения деталей.
-                </p>
+            <article class="booking-card">
+                <header class="booking-header">
+                    <h2 id="booking-title" class="booking-title">Бронирование тура</h2>
+                    <p class="booking-subtitle">
+                        Оставьте контакты и желаемое время — мы свяжемся с вами для подтверждения.
+                    </p>
+                </header>
 
                 <form id="booking-form" class="booking-form">
-                    <!-- скрытый id тура -->
                     <input type="hidden" id="tour_id" name="tour_id">
 
                     <div class="form-row">
@@ -68,21 +77,24 @@
                     <div class="form-row">
                         <label class="field">
                             <span class="field-label">Ваше имя</span>
-                            <input type="text" id="client_name" name="client_name" placeholder="Как к вам обращаться" required>
+                            <input type="text" id="client_name" name="client_name"
+                                   placeholder="Как к вам обращаться" required>
                         </label>
                     </div>
 
                     <div class="form-row">
                         <label class="field">
                             <span class="field-label">Телефон</span>
-                            <input type="tel" id="client_phone" name="client_phone" placeholder="+7 ___ ___‑__‑__" required>
+                            <input type="tel" id="client_phone" name="client_phone"
+                                   placeholder="+7 ___ ___‑__‑__" required>
                         </label>
                     </div>
 
                     <div class="form-row">
                         <label class="field">
                             <span class="field-label">Комментарий</span>
-                            <textarea id="comment" name="comment" placeholder="Пожелания, дети, особенности, и т.п."></textarea>
+                            <textarea id="comment" name="comment"
+                                      placeholder="Пожелания, дети, особенности и т.п."></textarea>
                         </label>
                     </div>
 
@@ -98,20 +110,36 @@
                         </button>
                     </div>
                 </form>
-            </div>
+            </article>
         </section>
     </main>
 </div>
 
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<!-- Ваш рабочий JS с логикой загрузки туров и бронирования -->
+<!-- Твой рабочий JS с логикой -->
 <script src="app.js?v=3"></script>
 <script>
-    // Дублируем действие "Назад" для кнопки внизу формы
+    // Действие кнопки "Назад к каталогу" внизу формы
     document.getElementById('back-button-duplicate').addEventListener('click', () => {
         document.getElementById('booking-container').classList.add('hidden');
         document.getElementById('tours-container').classList.remove('hidden');
+    });
+
+    // Переключение темы
+    const themeToggle = document.getElementById('theme-toggle');
+    const rootBody = document.body;
+    const savedTheme = localStorage.getItem('adler_theme');
+    if (savedTheme === 'light') {
+        rootBody.classList.remove('theme-dark');
+        rootBody.classList.add('theme-light');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const isDark = rootBody.classList.contains('theme-dark');
+        rootBody.classList.toggle('theme-dark', !isDark);
+        rootBody.classList.toggle('theme-light', isDark);
+        localStorage.setItem('adler_theme', isDark ? 'light' : 'dark');
     });
 </script>
 </body>
