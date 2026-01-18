@@ -5,13 +5,12 @@
     <title>Adler Tours — каталог и бронирование</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Стили -->
     <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body class="theme-dark">
 <div class="app">
 
-    <!-- HEADER / Бренд + переключатель темы -->
+    <!-- ШАПКА -->
     <header class="app-header">
         <div class="brand">
             <div class="brand-logo">AT</div>
@@ -46,7 +45,7 @@
             </div>
         </section>
 
-        <!-- ПАНЕЛЬ БРОНИРОВАНИЯ (выезжает снизу) -->
+        <!-- ПАНЕЛЬ БРОНИРОВАНИЯ -->
         <section id="booking-container" class="booking-overlay hidden">
             <div class="booking-backdrop"></div>
             <article class="booking-panel">
@@ -78,7 +77,7 @@
                         Оставьте контакты и желаемое время — мы свяжемся с вами для подтверждения и ответим на вопросы.
                     </p>
 
-                    <!-- progress заполнения -->
+                    <!-- Прогресс заполнения формы -->
                     <div class="booking-progress">
                         <div class="booking-progress-bar" id="booking-progress-bar"></div>
                     </div>
@@ -154,7 +153,7 @@
 <!-- Логика приложения -->
 <script src="app.js?v=20"></script>
 <script>
-    // Кнопка "Назад к каталогу" внизу формы
+    // Дублирующая кнопка "Назад к каталогу"
     document.getElementById('back-button-duplicate').addEventListener('click', () => {
         document.getElementById('booking-container').classList.add('hidden');
         document.getElementById('tours-container').classList.remove('hidden');
