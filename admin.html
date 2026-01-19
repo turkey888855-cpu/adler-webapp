@@ -9,7 +9,7 @@
 <body class="theme-light">
 
 <div class="layout">
-    <!-- САЙДБАР -->
+    <!-- ЛЕВАЯ ПАНЕЛЬ (SIDEBAR) -->
     <aside class="sidebar">
         <div class="sidebar-top">
             <div class="brand">TRAVEL SOCHI</div>
@@ -34,31 +34,31 @@
         </div>
     </aside>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <!-- ПРАВАЯ ЧАСТЬ (MAIN) -->
     <main class="main-content">
-        <!-- СТАТУС (скрытый технический элемент или маленький индикатор) -->
+        <!-- Индикатор статуса (справа сверху) -->
         <div id="status-indicator" class="status-badge">Connecting...</div>
 
-        <!-- DASHBOARD VIEW -->
+        <!-- 1. DASHBOARD (ГЛАВНАЯ) -->
         <section id="view-dashboard" class="view active">
             <h1 class="page-title">Dashboard</h1>
 
             <div class="dashboard-container">
-                <!-- КАРТОЧКА: ДОБАВИТЬ ТУР -->
+                <!-- ФОРМА ДОБАВЛЕНИЯ ТУРА -->
                 <div class="card card-form">
                     <h2>Добавить тур</h2>
                     
                     <form id="create-tour-form" class="soft-form">
                         <input type="text" id="new-title" class="input-soft" placeholder="Название тура" required>
                         
-                        <!-- Группировка цены и типа для компактности, или можно раздельно как на скрине -->
-                        <input type="number" id="new-price" class="input-soft" placeholder="Цена (₽)" required>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="new-price" class="input-soft" placeholder="Цена (₽)" required style="flex:1">
+                            <input type="text" id="new-type" class="input-soft" placeholder="Тип (напр. jeeping)" required style="flex:1">
+                        </div>
                         
-                        <input type="text" id="new-type" class="input-soft" placeholder="Тип (jeeping, yacht...)" required>
-                        
-                        <textarea id="new-description" class="input-soft area-soft" placeholder="Описание" rows="4"></textarea>
+                        <textarea id="new-description" class="input-soft area-soft" placeholder="Описание тура" rows="4"></textarea>
 
-                        <!-- Поле файла как на скрине -->
+                        <!-- ПОЛЕ ЗАГРУЗКИ ФОТО -->
                         <div class="file-input-wrapper">
                             <label for="new-image" class="file-label">
                                 <span class="file-btn">Выберите файл</span>
@@ -67,21 +67,20 @@
                             <input type="file" id="new-image" accept="image/*">
                         </div>
 
-                        <!-- Скрытый чекбокс активности (по умолчанию true) -->
-                        <div class="checkbox-wrapper" style="margin-bottom: 15px;">
-                            <input type="checkbox" id="new-active" checked>
-                            <label for="new-active">Активен сразу</label>
+                        <!-- ЧЕКБОКС АКТИВНОСТИ -->
+                        <div class="checkbox-wrapper" style="margin-top: 5px; display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="new-active" checked style="width: 16px; height: 16px;">
+                            <label for="new-active" style="font-size: 14px; color: #555;">Показывать в каталоге сразу</label>
                         </div>
 
                         <button type="submit" class="btn-primary">Сохранить</button>
                     </form>
                 </div>
 
-                <!-- КАРТОЧКА: ГРАФИК -->
+                <!-- ГРАФИК (ДЕМО) -->
                 <div class="card card-chart">
                     <h2>Заявки за неделю</h2>
                     <div class="chart-wrapper">
-                        <!-- Сетка графика -->
                         <div class="chart-body">
                             <div class="chart-y-axis">
                                 <span>14</span><span>10</span><span>6</span><span>2</span>
@@ -90,8 +89,6 @@
                                 <div class="chart-grid-lines">
                                     <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
                                 </div>
-                                <!-- Точки и линии (генерируются JS или CSS) -->
-                                <div id="chart-points" class="chart-drawing"></div>
                                 <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                                     <polyline points="0,80 16,60 32,70 48,40 64,20 80,30 100,10" 
                                               fill="none" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -106,13 +103,15 @@
             </div>
         </section>
 
-        <!-- TOURS VIEW -->
+        <!-- 2. СПИСОК ТУРОВ -->
         <section id="view-tours" class="view">
             <h1 class="page-title">Туры</h1>
-            <div id="tours-list" class="grid-list"></div>
+            <div id="tours-list" class="grid-list">
+                <!-- Сюда JS загрузит карточки туров -->
+            </div>
         </section>
 
-        <!-- BOOKINGS VIEW -->
+        <!-- 3. ЗАЯВКИ -->
         <section id="view-bookings" class="view">
             <h1 class="page-title">Заявки</h1>
             <div class="filters-bar">
@@ -121,32 +120,44 @@
                 <button class="filter-chip" data-status="confirmed">Подтвержденные</button>
                 <button class="filter-chip" data-status="done">Завершенные</button>
             </div>
-            <div id="bookings-list" class="list-vertical"></div>
+            <div id="bookings-list" class="list-vertical">
+                <!-- Сюда JS загрузит заявки -->
+            </div>
         </section>
 
-        <!-- Уведомления -->
-        <div id="admin-error" class="toast toast-error hidden"></div>
-        <div id="admin-success" class="toast toast-success hidden"></div>
+        <!-- ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ -->
+        <div id="admin-error" class="toast toast-error hidden">Ошибка</div>
+        <div id="admin-success" class="toast toast-success hidden">Успешно</div>
     </main>
 
-    <!-- Модальное окно редактирования -->
+    <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ -->
     <div id="tour-modal" class="modal hidden">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
-            <h3>Редактировать тур</h3>
+            <h3 style="margin-top: 0;">Редактировать тур</h3>
             <form id="edit-tour-form" class="soft-form">
                 <input type="hidden" id="edit-id">
-                <input type="text" id="edit-title" class="input-soft" placeholder="Название">
-                <input type="text" id="edit-type" class="input-soft" placeholder="Тип">
-                <input type="number" id="edit-price" class="input-soft" placeholder="Цена">
+                
+                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Название</label>
+                <input type="text" id="edit-title" class="input-soft">
+                
+                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Тип</label>
+                <input type="text" id="edit-type" class="input-soft">
+                
+                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Цена</label>
+                <input type="number" id="edit-price" class="input-soft">
+                
+                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Описание</label>
                 <textarea id="edit-description" class="input-soft" rows="3"></textarea>
+                
                 <div class="modal-buttons">
                     <button type="button" id="modal-cancel-btn" class="btn-text">Отмена</button>
-                    <button type="submit" class="btn-primary">Обновить</button>
+                    <button type="submit" class="btn-primary" style="margin-top: 0;">Обновить</button>
                 </div>
             </form>
         </div>
     </div>
+
 </div>
 
 <script src="admin.js"></script>
