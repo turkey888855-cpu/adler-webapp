@@ -81,6 +81,79 @@ document.getElementById("change-token-btn").addEventListener("click", () => {
 const toursListElAdmin = document.getElementById("tours-list");
 const createTourForm = document.getElementById("create-tour-form");
 
+// элементы модалки
+const tourModal = document.getElementById("tour-modal");
+const editTourForm = document.getElementById("edit-tour-form");
+const editIdInput = document.getElementById("edit-id");
+const editTitleInput = document.getElementById("edit-title");
+const editTypeInput = document.getElementById("edit-type");
+const editPriceInput = document.getElementById("edit-price");
+const editDurationInput = document.getElementById("edit-duration");
+const editDescriptionInput = document.getElementById("edit-description");
+const modalCloseBtn = document.getElementById("modal-close-btn");
+const modalCancelBtn = document.getElementById("modal-cancel-btn");
+
+let currentEditTourId = null;
+
+function openEditTourModal(tour) {
+  currentEditTourId = tour.id;
+  editIdInput.value = tour.id;
+  editTitleInput.value = tour.title || "";
+  editTypeInput.value = tour.type || "";
+  editPriceInput.value = tour.price_from ?? "";
+  editDurationInput.value = tour.duration_hours ?? "";
+  editDescriptionInput.value = tour.description || "";
+
+  tourModal.classList.remove("hidden");
+}
+
+function closeEditTourModal() {
+  currentEditTourId = null;
+  tourModal.classList.add("hidden");
+}
+
+modalCloseBtn.addEventListener("click", closeEditTourModal);
+modalCancelBtn.addEventListener("click", closeEditTourModal);
+tourModal.querySelector(".modal-backdrop").addEventListener("click", closeEditTourModal);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !tourModal.classList.contains("hidden")) {
+    closeEditTourModal();
+  }
+});
+
+editTourForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!currentEditTourId) return;
+
+  const title = editTitleInput.value.trim();
+  const type = editTypeInput.value.trim();
+  const price = editPriceInput.value || null;
+  const duration = editDurationInput.value || null;
+  const description = editDescriptionInput.value.trim() || null;
+
+  if (!title || !type) {
+    showError("Название и тип тура обязательны.");
+    return;
+  }
+
+  try {
+    await apiFetch(`/admin/tours/${currentEditTourId}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        title,
+        type,
+        price_from: price ? Number(price) : null,
+        duration_hours: duration ? Number(duration) : null,
+        description,
+      }),
+    });
+    showSuccess("Тур обновлён");
+    closeEditTourModal();
+    loadToursAdmin();
+  } catch {}
+});
+
 async function loadToursAdmin() {
   toursListElAdmin.innerHTML = "Загрузка туров...";
   try {
@@ -120,7 +193,7 @@ async function loadToursAdmin() {
       toggleBtn.className = "btn btn-outline";
       toggleBtn.textContent = "Скрыть / Показать";
 
-      editBtn.addEventListener("click", () => openEditTourPrompt(tour));
+      editBtn.addEventListener("click", () => openEditTourModal(tour));
       toggleBtn.addEventListener("click", async () => {
         try {
           await apiFetch(`/admin/tours/${tour.id}`, {
@@ -142,7 +215,7 @@ async function loadToursAdmin() {
       toursListElAdmin.appendChild(card);
     });
   } catch {
-    // showError уже показан
+    // ошибка уже показана
   }
 }
 
@@ -178,34 +251,6 @@ createTourForm.addEventListener("submit", async (e) => {
     loadToursAdmin();
   } catch {}
 });
-
-async function openEditTourPrompt(tour) {
-  const newTitle = prompt("Название тура", tour.title);
-  if (newTitle === null) return;
-  const newType = prompt("Тип (jeeping, yacht, excursion)", tour.type);
-  if (newType === null) return;
-  const newPrice = prompt("Цена от (₽)", tour.price_from ?? "");
-  if (newPrice === null) return;
-  const newDuration = prompt("Длительность (ч)", tour.duration_hours ?? "");
-  if (newDuration === null) return;
-  const newDescription = prompt("Описание", tour.description ?? "");
-  if (newDescription === null) return;
-
-  try {
-    await apiFetch(`/admin/tours/${tour.id}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        title: newTitle.trim(),
-        type: newType.trim(),
-        price_from: newPrice ? Number(newPrice) : null,
-        duration_hours: newDuration ? Number(newDuration) : null,
-        description: newDescription.trim(),
-      }),
-    });
-    showSuccess("Тур обновлён");
-    loadToursAdmin();
-  } catch {}
-}
 
 // --- ЗАЯВКИ ---
 
