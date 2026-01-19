@@ -4,30 +4,26 @@
     <meta charset="UTF-8">
     <title>Админ-панель — Adler Tours</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin.css?v=3">
+    <link rel="stylesheet" href="admin.css?v=4">
 </head>
 <body>
 <div class="admin-layout">
 
-    <!-- ЛЕВОЕ МЕНЮ -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-brand">TRAVEL SOCHI</div>
-            <div class="sidebar-role">Роль: Администратор</div>
+            <div class="sidebar-title">TRAVEL SOCHI</div>
+            <div class="sidebar-subtitle">Админ-панель</div>
         </div>
-
         <nav class="sidebar-nav">
             <button class="nav-link active" data-view="dashboard">Dashboard</button>
             <button class="nav-link" data-view="tours">Туры</button>
             <button class="nav-link" data-view="bookings">Заявки</button>
         </nav>
-
         <div class="sidebar-footer">
             <button id="change-token-btn" class="btn btn-outline">Сменить токен</button>
         </div>
     </aside>
 
-    <!-- ОСНОВНОЙ ЭКРАН -->
     <main class="main">
         <header class="topbar">
             <div class="topbar-title">Dashboard</div>
@@ -37,11 +33,10 @@
         <!-- DASHBOARD -->
         <section id="view-dashboard" class="view active">
             <div class="dashboard-grid">
-                <!-- Карточка добавления тура -->
                 <div class="card card-large">
                     <h1>Добавить тур</h1>
                     <p class="hint">
-                        Заполните данные тура: название, тип, стоимость и описание.  
+                        Заполните данные тура: название, тип, стоимость и описание.
                         Тур появится в каталоге WebApp после сохранения.
                     </p>
 
@@ -50,12 +45,10 @@
                             <span class="field-label">Название тура</span>
                             <input type="text" id="new-title" placeholder="Например: Джиппинг в Сочи" required>
                         </label>
-
                         <label class="field">
                             <span class="field-label">Тип</span>
                             <input type="text" id="new-type" placeholder="jeeping, yacht, excursion" required>
                         </label>
-
                         <div class="form-row">
                             <label class="field">
                                 <span class="field-label">Цена от, ₽</span>
@@ -66,26 +59,22 @@
                                 <input type="number" id="new-duration" placeholder="4">
                             </label>
                         </div>
-
                         <label class="field">
                             <span class="field-label">Описание тура</span>
                             <textarea id="new-description"
                                       placeholder="Кратко: формат тура, основные точки, особенности."></textarea>
                         </label>
-
                         <label class="checkbox">
                             <input type="checkbox" id="new-active" checked>
                             <span>Активен (показывать в каталоге)</span>
                         </label>
-
                         <button type="submit" class="btn btn-primary btn-full">Сохранить</button>
                     </form>
                 </div>
 
-                <!-- Карточка статистики / заглушка -->
                 <div class="card card-large">
                     <h1>Заявки за неделю</h1>
-                    <p class="hint">Демо-график. Можно позже связать с реальными данными /admin/bookings.</p>
+                    <p class="hint">Демо-график. Позже можно привязать к /admin/bookings.</p>
                     <div class="chart">
                         <div class="chart-grid">
                             <div class="chart-y">
@@ -176,6 +165,6 @@
     </div>
 </div>
 
-<script src="admin.js?v=3"></script>
+<script src="admin.js?v=4"></script>
 </body>
 </html>
