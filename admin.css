@@ -391,3 +391,47 @@ body {
     gap: 15px;
     margin-top: 10px;
 }
+/* Добавить в admin.css */
+
+.tour-card-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.tour-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.tour-info {
+    flex: 1;
+}
+
+.tour-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.tour-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.badge-active { background: #D1FAE5; color: #065F46; }
+.badge-hidden { background: #F3F4F6; color: #9CA3AF; }
+
+.tour-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
