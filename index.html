@@ -5,9 +5,9 @@
     <title>Adler Tours — каталог и бронирование</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css?v=20">
+    <link rel="stylesheet" href="style.css?v=30">
 </head>
-<body class="theme-dark">
+<body class="theme-light">
 <div class="app">
 
     <!-- ШАПКА -->
@@ -151,9 +151,9 @@
 <!-- Telegram WebApp SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!-- Логика приложения -->
-<script src="app.js?v=20"></script>
+<script src="app.js?v=30"></script>
 <script>
-    // Дублирующая кнопка "Назад к каталогу"
+    // Кнопка "Назад к каталогу" внизу формы
     document.getElementById('back-button-duplicate').addEventListener('click', () => {
         document.getElementById('booking-container').classList.add('hidden');
         document.getElementById('tours-container').classList.remove('hidden');
@@ -163,16 +163,16 @@
     const themeToggle = document.getElementById('theme-toggle');
     const rootBody = document.body;
     const savedTheme = localStorage.getItem('adler_theme');
-    if (savedTheme === 'light') {
-        rootBody.classList.remove('theme-dark');
-        rootBody.classList.add('theme-light');
+    if (savedTheme === 'dark') {
+        rootBody.classList.remove('theme-light');
+        rootBody.classList.add('theme-dark');
     }
 
     themeToggle.addEventListener('click', () => {
-        const isDark = rootBody.classList.contains('theme-dark');
-        rootBody.classList.toggle('theme-dark', !isDark);
-        rootBody.classList.toggle('theme-light', isDark);
-        localStorage.setItem('adler_theme', isDark ? 'light' : 'dark');
+        const isLight = rootBody.classList.contains('theme-light');
+        rootBody.classList.toggle('theme-light', !isLight);
+        rootBody.classList.toggle('theme-dark', isLight);
+        localStorage.setItem('adler_theme', isLight ? 'dark' : 'light');
     });
 </script>
 </body>
