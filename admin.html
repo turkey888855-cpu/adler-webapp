@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель — Adler Tours</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+<div class="admin-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Adler Tours</div>
+            <div class="sidebar-subtitle">Админ-панель</div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" data-tab="tours">Туры</button>
+            <button class="nav-btn" data-tab="bookings">Заявки</button>
+        </nav>
+        <div class="sidebar-footer">
+            <button id="change-token-btn" class="btn btn-outline">Сменить токен</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-title">Управление турами и заявками</div>
+            <div id="status-indicator" class="topbar-status">Токен не задан</div>
+        </header>
+
+        <section id="tab-tours" class="tab active">
+            <h1>Туры</h1>
+            <p class="hint">Добавляйте и редактируйте карточки туров: название, описание, цены, длительность.</p>
+
+            <div id="tours-list" class="cards-grid"></div>
+
+            <h2>Добавить тур</h2>
+            <form id="create-tour-form" class="form-grid">
+                <input type="text" id="new-title" placeholder="Название тура" required>
+                <input type="text" id="new-type" placeholder="Тип (jeeping, yacht, excursion)" required>
+                <input type="number" step="0.01" id="new-price" placeholder="Цена от, ₽">
+                <input type="number" id="new-duration" placeholder="Длительность, часов">
+                <textarea id="new-description" placeholder="Описание тура"></textarea>
+                <label class="checkbox">
+                    <input type="checkbox" id="new-active" checked> Активен
+                </label>
+                <button type="submit" class="btn btn-primary">Создать тур</button>
+            </form>
+        </section>
+
+        <section id="tab-bookings" class="tab">
+            <h1>Заявки</h1>
+            <div class="filters">
+                <button class="filter-btn active" data-status="">Все</button>
+                <button class="filter-btn" data-status="new">Новые</button>
+                <button class="filter-btn" data-status="confirmed">Подтверждённые</button>
+                <button class="filter-btn" data-status="done">Завершённые</button>
+                <button class="filter-btn" data-status="cancelled">Отменённые</button>
+            </div>
+            <div id="bookings-list" class="cards-list"></div>
+        </section>
+
+        <div id="admin-error" class="alert alert-error hidden"></div>
+        <div id="admin-success" class="alert alert-success hidden"></div>
+    </main>
+</div>
+
+<script src="admin.js?v=1"></script>
+</body>
+</html>
