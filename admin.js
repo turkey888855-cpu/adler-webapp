@@ -57,15 +57,20 @@ async function apiFetch(path, options = {}) {
   }
 }
 
-// Переключение вкладок
-document.querySelectorAll(".nav-btn").forEach(btn => {
+// Переключение views
+const navLinks = document.querySelectorAll(".nav-link");
+const views = document.querySelectorAll(".view");
+navLinks.forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    navLinks.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    const tab = btn.dataset.tab;
-    document.querySelectorAll(".tab").forEach(sec => {
-      sec.classList.toggle("active", sec.id === `tab-${tab}`);
+    const view = btn.dataset.view;
+    views.forEach((v) => {
+      v.classList.toggle("active", v.id === `view-${view}`);
     });
+    document.querySelector(".topbar-title").textContent =
+      view === "dashboard" ? "Dashboard" :
+      view === "tours" ? "Туры" : "Заявки";
   });
 });
 
@@ -75,6 +80,24 @@ document.getElementById("change-token-btn").addEventListener("click", () => {
   adminToken = "";
   setStatus("Токен не задан");
 });
+
+// --- DASHBOARD CHART (демо) ---
+function renderDemoChart() {
+  const data = [4, 6, 5, 8, 12, 10, 14]; // понедельник-воскресенье
+  const container = document.getElementById("chart-points");
+  if (!container) return;
+  container.innerHTML = "";
+  const max = Math.max(...data);
+  data.forEach((val, index) => {
+    const point = document.createElement("div");
+    point.className = "chart-point";
+    const left = (index / (data.length - 1)) * 100;
+    const bottom = (val / max) * 100;
+    point.style.left = `${left}%`;
+    point.style.bottom = `${bottom}%`;
+    container.appendChild(point);
+  });
+}
 
 // --- ТУРЫ ---
 
@@ -163,7 +186,7 @@ async function loadToursAdmin() {
       return;
     }
     toursListElAdmin.innerHTML = "";
-    tours.forEach(tour => {
+    tours.forEach((tour) => {
       const card = document.createElement("div");
       card.className = "card";
 
@@ -267,7 +290,7 @@ async function loadBookingsAdmin() {
       return;
     }
     bookingsListEl.innerHTML = "";
-    bookings.forEach(b => {
+    bookings.forEach((b) => {
       const card = document.createElement("div");
       card.className = "card";
 
@@ -293,7 +316,7 @@ async function loadBookingsAdmin() {
       const footer = document.createElement("div");
       footer.className = "card-footer";
 
-      ["confirmed", "done", "cancelled"].forEach(status => {
+      ["confirmed", "done", "cancelled"].forEach((status) => {
         const btn = document.createElement("button");
         btn.className = "btn btn-outline";
         btn.textContent =
@@ -323,9 +346,9 @@ async function loadBookingsAdmin() {
   } catch {}
 }
 
-document.querySelectorAll(".filter-btn").forEach(btn => {
+document.querySelectorAll(".filter-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     currentStatusFilter = btn.dataset.status || "";
     loadBookingsAdmin();
@@ -340,6 +363,7 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   } else {
     setStatus("Токен не задан");
   }
+  renderDemoChart();
   await loadToursAdmin();
   await loadBookingsAdmin();
 })();
