@@ -9,7 +9,7 @@
 <body class="theme-light">
 
 <div class="layout">
-    <!-- ЛЕВАЯ ПАНЕЛЬ (SIDEBAR) -->
+    <!-- САЙДБАР -->
     <aside class="sidebar">
         <div class="sidebar-top">
             <div class="brand">TRAVEL SOCHI</div>
@@ -17,6 +17,7 @@
                 <button class="nav-item active" data-view="dashboard">Dashboard</button>
                 <button class="nav-item" data-view="tours">Туры</button>
                 <button class="nav-item" data-view="bookings">Заявки</button>
+                <!-- Пример неактивной кнопки -->
                 <button class="nav-item disabled" disabled>Клиенты</button>
             </nav>
         </div>
@@ -34,31 +35,31 @@
         </div>
     </aside>
 
-    <!-- ПРАВАЯ ЧАСТЬ (MAIN) -->
+    <!-- ОСНОВНАЯ ЧАСТЬ -->
     <main class="main-content">
-        <!-- Индикатор статуса (справа сверху) -->
+        <!-- Индикатор (технический) -->
         <div id="status-indicator" class="status-badge">Connecting...</div>
 
-        <!-- 1. DASHBOARD (ГЛАВНАЯ) -->
+        <!-- 1. DASHBOARD -->
         <section id="view-dashboard" class="view active">
             <h1 class="page-title">Dashboard</h1>
 
             <div class="dashboard-container">
-                <!-- ФОРМА ДОБАВЛЕНИЯ ТУРА -->
+                <!-- КАРТОЧКА СОЗДАНИЯ ТУРА -->
                 <div class="card card-form">
                     <h2>Добавить тур</h2>
                     
                     <form id="create-tour-form" class="soft-form">
                         <input type="text" id="new-title" class="input-soft" placeholder="Название тура" required>
                         
-                        <div style="display: flex; gap: 10px;">
-                            <input type="number" id="new-price" class="input-soft" placeholder="Цена (₽)" required style="flex:1">
-                            <input type="text" id="new-type" class="input-soft" placeholder="Тип (напр. jeeping)" required style="flex:1">
+                        <div class="form-row">
+                            <input type="number" id="new-price" class="input-soft" placeholder="Цена (₽)" required>
+                            <input type="text" id="new-type" class="input-soft" placeholder="Тип (напр. jeeping)" required>
                         </div>
                         
                         <textarea id="new-description" class="input-soft area-soft" placeholder="Описание тура" rows="4"></textarea>
 
-                        <!-- ПОЛЕ ЗАГРУЗКИ ФОТО -->
+                        <!-- ВЫБОР ФАЙЛА -->
                         <div class="file-input-wrapper">
                             <label for="new-image" class="file-label">
                                 <span class="file-btn">Выберите файл</span>
@@ -67,17 +68,17 @@
                             <input type="file" id="new-image" accept="image/*">
                         </div>
 
-                        <!-- ЧЕКБОКС АКТИВНОСТИ -->
-                        <div class="checkbox-wrapper" style="margin-top: 5px; display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" id="new-active" checked style="width: 16px; height: 16px;">
-                            <label for="new-active" style="font-size: 14px; color: #555;">Показывать в каталоге сразу</label>
+                        <!-- ЧЕКБОКС -->
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="new-active" checked>
+                            <label for="new-active">Активен сразу</label>
                         </div>
 
                         <button type="submit" class="btn-primary">Сохранить</button>
                     </form>
                 </div>
 
-                <!-- ГРАФИК (ДЕМО) -->
+                <!-- ГРАФИК -->
                 <div class="card card-chart">
                     <h2>Заявки за неделю</h2>
                     <div class="chart-wrapper">
@@ -107,11 +108,11 @@
         <section id="view-tours" class="view">
             <h1 class="page-title">Туры</h1>
             <div id="tours-list" class="grid-list">
-                <!-- Сюда JS загрузит карточки туров -->
+                <!-- JS загрузит сюда карточки -->
             </div>
         </section>
 
-        <!-- 3. ЗАЯВКИ -->
+        <!-- 3. СПИСОК ЗАЯВОК -->
         <section id="view-bookings" class="view">
             <h1 class="page-title">Заявки</h1>
             <div class="filters-bar">
@@ -121,11 +122,11 @@
                 <button class="filter-chip" data-status="done">Завершенные</button>
             </div>
             <div id="bookings-list" class="list-vertical">
-                <!-- Сюда JS загрузит заявки -->
+                <!-- JS загрузит сюда заявки -->
             </div>
         </section>
 
-        <!-- ВСПЛЫВАЮЩИЕ УВЕДОМЛЕНИЯ -->
+        <!-- УВЕДОМЛЕНИЯ -->
         <div id="admin-error" class="toast toast-error hidden">Ошибка</div>
         <div id="admin-success" class="toast toast-success hidden">Успешно</div>
     </main>
@@ -134,30 +135,22 @@
     <div id="tour-modal" class="modal hidden">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
-            <h3 style="margin-top: 0;">Редактировать тур</h3>
+            <h3>Редактировать тур</h3>
             <form id="edit-tour-form" class="soft-form">
                 <input type="hidden" id="edit-id">
                 
-                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Название</label>
-                <input type="text" id="edit-title" class="input-soft">
-                
-                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Тип</label>
-                <input type="text" id="edit-type" class="input-soft">
-                
-                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Цена</label>
-                <input type="number" id="edit-price" class="input-soft">
-                
-                <label style="font-size: 12px; color: #888; margin-bottom: -10px;">Описание</label>
-                <textarea id="edit-description" class="input-soft" rows="3"></textarea>
+                <input type="text" id="edit-title" class="input-soft" placeholder="Название">
+                <input type="text" id="edit-type" class="input-soft" placeholder="Тип">
+                <input type="number" id="edit-price" class="input-soft" placeholder="Цена">
+                <textarea id="edit-description" class="input-soft" rows="3" placeholder="Описание"></textarea>
                 
                 <div class="modal-buttons">
                     <button type="button" id="modal-cancel-btn" class="btn-text">Отмена</button>
-                    <button type="submit" class="btn-primary" style="margin-top: 0;">Обновить</button>
+                    <button type="submit" class="btn-primary" style="margin-top:0;">Обновить</button>
                 </div>
             </form>
         </div>
     </div>
-
 </div>
 
 <script src="admin.js"></script>
