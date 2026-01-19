@@ -7,14 +7,16 @@ const errorEl = document.getElementById("admin-error");
 const successEl = document.getElementById("admin-success");
 
 function setStatus(text) {
-  statusEl.textContent = text;
+  if (statusEl) statusEl.textContent = text;
 }
 function showError(text) {
+  if (!errorEl || !successEl) return;
   errorEl.textContent = text;
   errorEl.classList.remove("hidden");
   successEl.classList.add("hidden");
 }
 function showSuccess(text) {
+  if (!errorEl || !successEl) return;
   successEl.textContent = text;
   successEl.classList.remove("hidden");
   errorEl.classList.add("hidden");
@@ -68,22 +70,28 @@ navLinks.forEach((btn) => {
     views.forEach((v) => {
       v.classList.toggle("active", v.id === `view-${view}`);
     });
-    document.querySelector(".topbar-title").textContent =
-      view === "dashboard" ? "Dashboard" :
-      view === "tours" ? "Туры" : "Заявки";
+    const topbarTitle = document.querySelector(".topbar-title");
+    if (topbarTitle) {
+      topbarTitle.textContent =
+        view === "dashboard" ? "Dashboard" :
+        view === "tours" ? "Туры" : "Заявки";
+    }
   });
 });
 
 // Смена токена
-document.getElementById("change-token-btn").addEventListener("click", () => {
-  localStorage.removeItem("admin_token");
-  adminToken = "";
-  setStatus("Токен не задан");
-});
+const changeTokenBtn = document.getElementById("change-token-btn");
+if (changeTokenBtn) {
+  changeTokenBtn.addEventListener("click", () => {
+    localStorage.removeItem("admin_token");
+    adminToken = "";
+    setStatus("Токен не задан");
+  });
+}
 
 // --- DASHBOARD CHART (демо) ---
 function renderDemoChart() {
-  const data = [4, 6, 5, 8, 12, 10, 14]; // понедельник-воскресенье
+  const data = [4, 6, 5, 8, 12, 10, 14];
   const container = document.getElementById("chart-points");
   if (!container) return;
   container.innerHTML = "";
@@ -104,7 +112,7 @@ function renderDemoChart() {
 const toursListElAdmin = document.getElementById("tours-list");
 const createTourForm = document.getElementById("create-tour-form");
 
-// элементы модалки
+// модалка
 const tourModal = document.getElementById("tour-modal");
 const editTourForm = document.getElementById("edit-tour-form");
 const editIdInput = document.getElementById("edit-id");
@@ -115,69 +123,74 @@ const editDurationInput = document.getElementById("edit-duration");
 const editDescriptionInput = document.getElementById("edit-description");
 const modalCloseBtn = document.getElementById("modal-close-btn");
 const modalCancelBtn = document.getElementById("modal-cancel-btn");
+const modalBackdrop = tourModal ? tourModal.querySelector(".modal-backdrop") : null;
 
 let currentEditTourId = null;
 
 function openEditTourModal(tour) {
+  if (!tourModal) return;
   currentEditTourId = tour.id;
-  editIdInput.value = tour.id;
-  editTitleInput.value = tour.title || "";
-  editTypeInput.value = tour.type || "";
-  editPriceInput.value = tour.price_from ?? "";
-  editDurationInput.value = tour.duration_hours ?? "";
-  editDescriptionInput.value = tour.description || "";
-
+  if (editIdInput) editIdInput.value = tour.id;
+  if (editTitleInput) editTitleInput.value = tour.title || "";
+  if (editTypeInput) editTypeInput.value = tour.type || "";
+  if (editPriceInput) editPriceInput.value = tour.price_from ?? "";
+  if (editDurationInput) editDurationInput.value = tour.duration_hours ?? "";
+  if (editDescriptionInput) editDescriptionInput.value = tour.description || "";
   tourModal.classList.remove("hidden");
 }
 
 function closeEditTourModal() {
+  if (!tourModal) return;
   currentEditTourId = null;
   tourModal.classList.add("hidden");
 }
 
-modalCloseBtn.addEventListener("click", closeEditTourModal);
-modalCancelBtn.addEventListener("click", closeEditTourModal);
-tourModal.querySelector(".modal-backdrop").addEventListener("click", closeEditTourModal);
+if (modalCloseBtn) modalCloseBtn.addEventListener("click", closeEditTourModal);
+if (modalCancelBtn) modalCancelBtn.addEventListener("click", closeEditTourModal);
+if (modalBackdrop) modalBackdrop.addEventListener("click", closeEditTourModal);
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !tourModal.classList.contains("hidden")) {
+  if (e.key === "Escape" && tourModal && !tourModal.classList.contains("hidden")) {
     closeEditTourModal();
   }
 });
 
-editTourForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!currentEditTourId) return;
+if (editTourForm) {
+  editTourForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentEditTourId) return;
 
-  const title = editTitleInput.value.trim();
-  const type = editTypeInput.value.trim();
-  const price = editPriceInput.value || null;
-  const duration = editDurationInput.value || null;
-  const description = editDescriptionInput.value.trim() || null;
+    const title = editTitleInput.value.trim();
+    const type = editTypeInput.value.trim();
+    const price = editPriceInput.value || null;
+    const duration = editDurationInput.value || null;
+    const description = editDescriptionInput.value.trim() || null;
 
-  if (!title || !type) {
-    showError("Название и тип тура обязательны.");
-    return;
-  }
+    if (!title || !type) {
+      showError("Название и тип тура обязательны.");
+      return;
+    }
 
-  try {
-    await apiFetch(`/admin/tours/${currentEditTourId}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        title,
-        type,
-        price_from: price ? Number(price) : null,
-        duration_hours: duration ? Number(duration) : null,
-        description,
-      }),
-    });
-    showSuccess("Тур обновлён");
-    closeEditTourModal();
-    loadToursAdmin();
-  } catch {}
-});
+    try {
+      await apiFetch(`/admin/tours/${currentEditTourId}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          title,
+          type,
+          price_from: price ? Number(price) : null,
+          duration_hours: duration ? Number(duration) : null,
+          description,
+        }),
+      });
+      showSuccess("Тур обновлён");
+      closeEditTourModal();
+      loadToursAdmin();
+    } catch {}
+  });
+}
 
 async function loadToursAdmin() {
+  if (!toursListElAdmin) return;
   toursListElAdmin.innerHTML = "Загрузка туров...";
   try {
     const tours = await apiFetch("/admin/tours");
@@ -242,38 +255,40 @@ async function loadToursAdmin() {
   }
 }
 
-createTourForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const title = document.getElementById("new-title").value.trim();
-  const type = document.getElementById("new-type").value.trim();
-  const price = document.getElementById("new-price").value || null;
-  const duration = document.getElementById("new-duration").value || null;
-  const description = document.getElementById("new-description").value.trim() || null;
-  const is_active = document.getElementById("new-active").checked;
+if (createTourForm) {
+  createTourForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const title = document.getElementById("new-title").value.trim();
+    const type = document.getElementById("new-type").value.trim();
+    const price = document.getElementById("new-price").value || null;
+    const duration = document.getElementById("new-duration").value || null;
+    const description = document.getElementById("new-description").value.trim() || null;
+    const is_active = document.getElementById("new-active").checked;
 
-  if (!title || !type) {
-    showError("Заполните хотя бы название и тип тура.");
-    return;
-  }
+    if (!title || !type) {
+      showError("Заполните хотя бы название и тип тура.");
+      return;
+    }
 
-  try {
-    await apiFetch("/admin/tours", {
-      method: "POST",
-      body: JSON.stringify({
-        title,
-        type,
-        price_from: price ? Number(price) : null,
-        duration_hours: duration ? Number(duration) : null,
-        description,
-        is_active,
-      }),
-    });
-    showSuccess("Тур создан");
-    createTourForm.reset();
-    document.getElementById("new-active").checked = true;
-    loadToursAdmin();
-  } catch {}
-});
+    try {
+      await apiFetch("/admin/tours", {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          type,
+          price_from: price ? Number(price) : null,
+          duration_hours: duration ? Number(duration) : null,
+          description,
+          is_active,
+        }),
+      });
+      showSuccess("Тур создан");
+      createTourForm.reset();
+      document.getElementById("new-active").checked = true;
+      loadToursAdmin();
+    } catch {}
+  });
+}
 
 // --- ЗАЯВКИ ---
 
@@ -281,6 +296,7 @@ const bookingsListEl = document.getElementById("bookings-list");
 let currentStatusFilter = "";
 
 async function loadBookingsAdmin() {
+  if (!bookingsListEl) return;
   bookingsListEl.innerHTML = "Загрузка заявок...";
   try {
     const qs = currentStatusFilter ? `?status=${currentStatusFilter}` : "";
