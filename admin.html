@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Админ-панель — Adler Tours</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin.css?v=1">
+    <link rel="stylesheet" href="admin.css?v=2">
 </head>
 <body>
 <div class="admin-layout">
@@ -29,6 +29,7 @@
             <div id="status-indicator" class="topbar-status">Токен не задан</div>
         </header>
 
+        <!-- ВКЛАДКА ТУРОВ -->
         <section id="tab-tours" class="tab active">
             <h1>Туры</h1>
             <p class="hint">Добавляйте и редактируйте карточки туров: название, описание, цены, длительность.</p>
@@ -49,6 +50,7 @@
             </form>
         </section>
 
+        <!-- ВКЛАДКА ЗАЯВОК -->
         <section id="tab-bookings" class="tab">
             <h1>Заявки</h1>
             <div class="filters">
@@ -66,6 +68,51 @@
     </main>
 </div>
 
-<script src="admin.js?v=1"></script>
+<!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ТУРА -->
+<div id="tour-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h2 class="modal-title">Редактирование тура</h2>
+            <button type="button" id="modal-close-btn" class="modal-close">×</button>
+        </div>
+        <form id="edit-tour-form" class="modal-form">
+            <input type="hidden" id="edit-id">
+
+            <label class="modal-field">
+                <span class="modal-label">Название тура</span>
+                <input type="text" id="edit-title" required>
+            </label>
+
+            <label class="modal-field">
+                <span class="modal-label">Тип (jeeping, yacht, excursion)</span>
+                <input type="text" id="edit-type" required>
+            </label>
+
+            <div class="modal-row">
+                <label class="modal-field">
+                    <span class="modal-label">Цена от, ₽</span>
+                    <input type="number" step="0.01" id="edit-price">
+                </label>
+                <label class="modal-field">
+                    <span class="modal-label">Длительность, часов</span>
+                    <input type="number" id="edit-duration">
+                </label>
+            </div>
+
+            <label class="modal-field">
+                <span class="modal-label">Описание тура</span>
+                <textarea id="edit-description" rows="4"></textarea>
+            </label>
+
+            <div class="modal-actions">
+                <button type="button" id="modal-cancel-btn" class="btn btn-outline">Отмена</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="admin.js?v=2"></script>
 </body>
 </html>
