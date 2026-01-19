@@ -2,96 +2,103 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Админ-панель — Adler Tours</title>
+    <title>Admin Panel — Travel Sochi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin.css?v=6">
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body class="theme-light">
-<div class="admin-layout">
 
-    <!-- ЛЕВАЯ ПАНЕЛЬ -->
+<div class="layout">
+    <!-- САЙДБАР -->
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-brand">TRAVEL SOCHI</div>
-            <div class="sidebar-role">Роль: Администратор</div>
+        <div class="sidebar-top">
+            <div class="brand">TRAVEL SOCHI</div>
+            <nav class="nav">
+                <button class="nav-item active" data-view="dashboard">Dashboard</button>
+                <button class="nav-item" data-view="tours">Туры</button>
+                <button class="nav-item" data-view="bookings">Заявки</button>
+                <button class="nav-item disabled" disabled>Клиенты</button>
+            </nav>
         </div>
-        <nav class="sidebar-nav">
-            <button class="nav-link active" data-view="dashboard">Dashboard</button>
-            <button class="nav-link" data-view="tours">Туры</button>
-            <button class="nav-link" data-view="bookings">Заявки</button>
-            <button class="nav-link disabled" data-view="clients" disabled>Клиенты</button>
-        </nav>
-        <div class="sidebar-footer">
-            <button id="change-token-btn" class="btn btn-outline">Сменить токен</button>
-            <button id="theme-toggle" class="btn btn-ghost">Сменить тему</button>
+
+        <div class="sidebar-bottom">
+            <div class="role-info">Роль: <span class="role-highlight">Администратор</span></div>
+            <div class="sidebar-actions">
+                <button id="theme-toggle" class="btn-text">
+                    <span class="icon">◑</span> Сменить тему
+                </button>
+                <button id="change-token-btn" class="btn-text" style="font-size: 11px; opacity: 0.5;">
+                    Сменить токен
+                </button>
+            </div>
         </div>
     </aside>
 
-    <!-- ПРАВАЯ ЧАСТЬ -->
-    <main class="main">
-        <header class="topbar">
-            <div class="topbar-title">Dashboard</div>
-            <div id="status-indicator" class="topbar-status">Токен не задан</div>
-        </header>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="main-content">
+        <!-- СТАТУС (скрытый технический элемент или маленький индикатор) -->
+        <div id="status-indicator" class="status-badge">Connecting...</div>
 
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD VIEW -->
         <section id="view-dashboard" class="view active">
-            <div class="dashboard-grid">
-                <!-- ДОБАВИТЬ ТУР -->
-                <div class="card card-large">
-                    <h1>Добавить тур</h1>
-                    <p class="hint">
-                        Заполните данные тура: название, тип, стоимость и описание.
-                        Тур появится в каталоге WebApp после сохранения.
-                    </p>
+            <h1 class="page-title">Dashboard</h1>
 
-                    <form id="create-tour-form" class="form-vertical">
-                        <label class="field">
-                            <span class="field-label">Название тура</span>
-                            <input type="text" id="new-title" placeholder="Например: Джиппинг в Сочи" required>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Тип</span>
-                            <input type="text" id="new-type" placeholder="jeeping, yacht, excursion" required>
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Цена от, ₽</span>
-                            <input type="number" step="0.01" id="new-price" placeholder="6000">
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Длительность, ч</span>
-                            <input type="number" id="new-duration" placeholder="4">
-                        </label>
-                        <label class="field">
-                            <span class="field-label">Описание тура</span>
-                            <textarea id="new-description"
-                                      placeholder="Кратко: формат тура, основные точки, особенности."></textarea>
-                        </label>
-                        <label class="checkbox">
+            <div class="dashboard-container">
+                <!-- КАРТОЧКА: ДОБАВИТЬ ТУР -->
+                <div class="card card-form">
+                    <h2>Добавить тур</h2>
+                    
+                    <form id="create-tour-form" class="soft-form">
+                        <input type="text" id="new-title" class="input-soft" placeholder="Название тура" required>
+                        
+                        <!-- Группировка цены и типа для компактности, или можно раздельно как на скрине -->
+                        <input type="number" id="new-price" class="input-soft" placeholder="Цена (₽)" required>
+                        
+                        <input type="text" id="new-type" class="input-soft" placeholder="Тип (jeeping, yacht...)" required>
+                        
+                        <textarea id="new-description" class="input-soft area-soft" placeholder="Описание" rows="4"></textarea>
+
+                        <!-- Поле файла как на скрине -->
+                        <div class="file-input-wrapper">
+                            <label for="new-image" class="file-label">
+                                <span class="file-btn">Выберите файл</span>
+                                <span id="file-name" class="file-text">Файл не выбран</span>
+                            </label>
+                            <input type="file" id="new-image" accept="image/*">
+                        </div>
+
+                        <!-- Скрытый чекбокс активности (по умолчанию true) -->
+                        <div class="checkbox-wrapper" style="margin-bottom: 15px;">
                             <input type="checkbox" id="new-active" checked>
-                            <span>Активен (показывать в каталоге)</span>
-                        </label>
-                        <button type="submit" class="btn btn-primary btn-full">Сохранить</button>
+                            <label for="new-active">Активен сразу</label>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Сохранить</button>
                     </form>
                 </div>
 
-                <!-- ГРАФИК ЗАЯВОК -->
-                <div class="card card-large">
-                    <h1>Заявки за неделю</h1>
-                    <p class="hint">
-                        Демо-график. Позже можно привязать к реальным данным /admin/bookings.
-                    </p>
-                    <div class="chart">
-                        <div class="chart-grid">
-                            <div class="chart-y">
+                <!-- КАРТОЧКА: ГРАФИК -->
+                <div class="card card-chart">
+                    <h2>Заявки за неделю</h2>
+                    <div class="chart-wrapper">
+                        <!-- Сетка графика -->
+                        <div class="chart-body">
+                            <div class="chart-y-axis">
                                 <span>14</span><span>10</span><span>6</span><span>2</span>
                             </div>
-                            <div class="chart-lines">
-                                <div class="chart-line"></div>
-                                <div id="chart-points" class="chart-points"></div>
+                            <div class="chart-area">
+                                <div class="chart-grid-lines">
+                                    <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+                                </div>
+                                <!-- Точки и линии (генерируются JS или CSS) -->
+                                <div id="chart-points" class="chart-drawing"></div>
+                                <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                    <polyline points="0,80 16,60 32,70 48,40 64,20 80,30 100,10" 
+                                              fill="none" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
                         </div>
-                        <div class="chart-x">
+                        <div class="chart-x-axis">
                             <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
                         </div>
                     </div>
@@ -99,33 +106,49 @@
             </div>
         </section>
 
-        <!-- ТУРЫ -->
+        <!-- TOURS VIEW -->
         <section id="view-tours" class="view">
-            <h1>Туры</h1>
-            <p class="hint">Редактируйте существующие туры или скрывайте их из каталога.</p>
-            <div id="tours-list" class="cards-grid"></div>
+            <h1 class="page-title">Туры</h1>
+            <div id="tours-list" class="grid-list"></div>
         </section>
 
-        <!-- ЗАЯВКИ -->
+        <!-- BOOKINGS VIEW -->
         <section id="view-bookings" class="view">
-            <h1>Заявки</h1>
-            <div class="filters">
-                <button class="filter-btn active" data-status="">Все</button>
-                <button class="filter-btn" data-status="new">Новые</button>
-                <button class="filter-btn" data-status="confirmed">Подтв.</button>
-                <button class="filter-btn" data-status="done">Заверш.</button>
-                <button class="filter-btn" data-status="cancelled">Отм.</button>
+            <h1 class="page-title">Заявки</h1>
+            <div class="filters-bar">
+                <button class="filter-chip active" data-status="">Все</button>
+                <button class="filter-chip" data-status="new">Новые</button>
+                <button class="filter-chip" data-status="confirmed">Подтвержденные</button>
+                <button class="filter-chip" data-status="done">Завершенные</button>
             </div>
-            <div id="bookings-list" class="cards-list"></div>
+            <div id="bookings-list" class="list-vertical"></div>
         </section>
 
-        <div id="admin-error" class="alert alert-error hidden"></div>
-        <div id="admin-success" class="alert alert-success hidden"></div>
+        <!-- Уведомления -->
+        <div id="admin-error" class="toast toast-error hidden"></div>
+        <div id="admin-success" class="toast toast-success hidden"></div>
     </main>
+
+    <!-- Модальное окно редактирования -->
+    <div id="tour-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h3>Редактировать тур</h3>
+            <form id="edit-tour-form" class="soft-form">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="edit-title" class="input-soft" placeholder="Название">
+                <input type="text" id="edit-type" class="input-soft" placeholder="Тип">
+                <input type="number" id="edit-price" class="input-soft" placeholder="Цена">
+                <textarea id="edit-description" class="input-soft" rows="3"></textarea>
+                <div class="modal-buttons">
+                    <button type="button" id="modal-cancel-btn" class="btn-text">Отмена</button>
+                    <button type="submit" class="btn-primary">Обновить</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-
-
-<script src="admin.js?v=6"></script>
+<script src="admin.js"></script>
 </body>
 </html>
