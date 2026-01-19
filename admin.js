@@ -1,42 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. НАСТРОЙКИ
-    const BACKEND_URL = "https://adler-backend.onrender.com"; 
+    // === КОНФИГУРАЦИЯ ===
+    const BACKEND_URL = "https://adler-backend.onrender.com";
     let adminToken = localStorage.getItem("admin_token") || "";
 
-    // 2. ЭЛЕМЕНТЫ DOM
+    // === ЭЛЕМЕНТЫ ===
     const statusEl = document.getElementById("status-indicator");
     const errorEl = document.getElementById("admin-error");
     const successEl = document.getElementById("admin-success");
     
-    const toursListEl = document.getElementById("tours-list");
-    const bookingsListEl = document.getElementById("bookings-list");
-    
-    // Модальное окно
-    const modal = document.getElementById("tour-modal");
-    const modalBackdrop = document.querySelector(".modal-backdrop");
-    const modalCancelBtn = document.getElementById("modal-cancel-btn");
-    const editForm = document.getElementById("edit-tour-form");
-
-    // 3. УТИЛИТЫ
+    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
     function setStatus(text) {
-        if (statusEl) statusEl.textContent = text;
-        console.log(`[STATUS]: ${text}`);
+        if(statusEl) statusEl.textContent = text;
+        console.log("Status:", text);
     }
 
-    function showToast(element, text, isError = false) {
-        if (!element) return;
-        element.textContent = text;
-        element.classList.remove("hidden");
-        console.log(isError ? `[ERROR]: ${text}` : `[SUCCESS]: ${text}`);
-        
-        // Скрываем через 4 секунды
-        setTimeout(() => element.classList.add("hidden"), 4000);
+    function showToast(el, text, isErr) {
+        if(!el) return;
+        el.textContent = text;
+        el.classList.remove("hidden");
+        setTimeout(() => el.classList.add("hidden"), 4000);
     }
     
     function showError(text) { showToast(errorEl, text, true); }
     function showSuccess(text) { showToast(successEl, text, false); }
 
-    // Визуальное отображение имени файла
+    // Визуальное отображение имени файла при выборе
     const fileInput = document.getElementById('new-image');
     if(fileInput) {
         fileInput.addEventListener('change', (e) => {
@@ -46,68 +34,74 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 4. API FETCH (ЯДРО ЗАПРОСОВ)
+    // === API FETCH (ГЛАВНАЯ ФУНКЦИЯ) ===
     async function apiFetch(path, options = {}) {
         if (!adminToken) {
-            adminToken = prompt("Введите ADMIN_TOKEN (пароль администратора):") || "";
+            adminToken = prompt("Введите ADMIN_TOKEN:") || "";
             if(adminToken) localStorage.setItem("admin_token", adminToken);
         }
 
         const headers = options.headers || {};
         headers["X-Admin-Token"] = adminToken;
 
-        // ВАЖНО: Если отправляем JSON, ставим Content-Type.
-        // Если отправляем FormData (фото), браузер сам поставит Boundary, вручную ставить НЕЛЬЗЯ.
-        if (!(options.body instanceof FormData) && !headers["Content-Type"]) {
-            headers["Content-Type"] = "application/json";
+        // ИСПРАВЛЕНИЕ: Если отправляем FormData (файл), НЕ ставим Content-Type.
+        // Если отправляем JSON, ставим application/json.
+        if (!(options.body instanceof FormData)) {
+            if (!headers["Content-Type"]) {
+                headers["Content-Type"] = "application/json";
+            }
         }
 
         try {
             const res = await fetch(`${BACKEND_URL}${path}`, { ...options, headers });
             
-            // Если токен протух
             if (res.status === 401) {
                 localStorage.removeItem("admin_token");
-                adminToken = "";
-                setStatus("Ошибка: Неверный токен");
-                showError("Неверный токен. Обновите страницу.");
+                setStatus("Токен неверный");
+                showError("Ошибка авторизации. Обновите страницу.");
                 throw new Error("Unauthorized");
             }
 
-            // Читаем ответ
+            // Получаем текст ответа
             const text = await res.text();
             
             if (!res.ok) {
-                throw new Error(text || `Ошибка сервера: ${res.status}`);
+                // Пытаемся понять ошибку
+                throw new Error(text || `Ошибка ${res.status}`);
             }
-            
-            setStatus("API Connected");
-            if (res.status === 204 || !text) return null;
-            
+
+            setStatus("API OK");
+            if (!text) return null; // Пустой ответ
+
             try {
                 return JSON.parse(text);
             } catch (e) {
-                return text; // Если сервер вернул просто текст
+                return text;
             }
-
         } catch (e) {
-            console.error("API Error:", e);
-            showError(e.message);
+            console.error(e);
+            if (e.message.includes("Failed to fetch")) {
+                showError("Ошибка сети! Сервер Render спит или блокирует запрос. Подождите 1 минуту.");
+            } else {
+                showError(e.message);
+            }
             throw e;
         }
     }
 
-    // 5. ЛОГИКА ТУРОВ
+    // === ТУРЫ ===
+    const toursListEl = document.getElementById("tours-list");
+
     async function loadTours() {
         if (!toursListEl) return;
-        toursListEl.innerHTML = '<div style="padding:20px; color:#888;">Загрузка туров...</div>';
+        toursListEl.innerHTML = '<div style="padding:20px; color:#888;">Загрузка...</div>';
         
         try {
             const tours = await apiFetch("/admin/tours");
             toursListEl.innerHTML = "";
-            
+
             if (!Array.isArray(tours) || tours.length === 0) {
-                toursListEl.innerHTML = '<div style="padding:20px;">Список туров пуст.</div>';
+                toursListEl.innerHTML = '<div style="padding:20px;">Список пуст.</div>';
                 return;
             }
 
@@ -115,13 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const card = document.createElement("div");
                 card.className = "card";
                 
-                // Картинка: если нет, ставим заглушку
-                const imgUrl = tour.image_url || tour.image || 'https://via.placeholder.com/60?text=No+Img';
-                const isActive = tour.is_active; 
-                
+                // Картинка или заглушка
+                const imgUrl = tour.image_url || tour.image || 'https://via.placeholder.com/60?text=IMG';
+                const isActive = tour.is_active;
+
                 card.innerHTML = `
                     <div class="tour-card-header">
-                        <img src="${imgUrl}" class="tour-image" alt="img" onerror="this.src='https://via.placeholder.com/60?text=Error'">
+                        <img src="${imgUrl}" class="tour-image" alt="Tour" onerror="this.src='https://via.placeholder.com/60?text=Err'">
                         <div class="tour-info">
                             <span class="tour-title">${tour.title}</span>
                             <span class="tour-badge ${isActive ? 'badge-active' : 'badge-hidden'}">
@@ -133,190 +127,158 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
                     <div class="tour-actions">
-                        <!-- Используем data-атрибуты для передачи данных -->
-                        <button class="btn-text action-btn edit-btn" data-json='${JSON.stringify(tour).replace(/'/g, "&apos;")}'>
+                         <button class="btn-text edit-btn" data-json='${JSON.stringify(tour).replace(/'/g, "&apos;")}'>
                             ✎ Редактировать
-                        </button>
-                        <button class="btn-text action-btn toggle-btn" data-id="${tour.id}" data-active="${isActive}">
+                         </button>
+                         <button class="btn-text toggle-btn" data-id="${tour.id}" data-active="${isActive}">
                             ${isActive ? '👁 Скрыть' : '👁 Показать'}
-                        </button>
+                         </button>
                     </div>
                 `;
                 toursListEl.appendChild(card);
             });
         } catch (e) {
-            // Ошибка уже показана в apiFetch
+            // Ошибка уже показана через showError
         }
     }
 
-    // Обработка кликов по кнопкам (ДЕЛЕГИРОВАНИЕ)
-    // Это чинит проблему "кнопки не работают"
+    // Делегирование событий (чтобы кнопки работали всегда)
     if (toursListEl) {
         toursListEl.addEventListener("click", async (e) => {
-            const btn = e.target.closest(".action-btn");
-            if (!btn) return;
-
             // Кнопка Скрыть/Показать
-            if (btn.classList.contains("toggle-btn")) {
+            if (e.target.closest(".toggle-btn")) {
+                const btn = e.target.closest(".toggle-btn");
                 const id = btn.dataset.id;
-                const currentActive = btn.dataset.active === "true";
+                const active = btn.dataset.active === "true";
                 try {
                     await apiFetch(`/admin/tours/${id}`, {
                         method: "PATCH",
-                        body: JSON.stringify({ is_active: !currentActive })
+                        body: JSON.stringify({ is_active: !active })
                     });
-                    showSuccess(`Статус тура #${id} обновлен`);
                     loadTours();
-                } catch (err) { console.error(err); }
+                    showSuccess(`Статус обновлен`);
+                } catch (err) {}
             }
-
+            
             // Кнопка Редактировать
-            if (btn.classList.contains("edit-btn")) {
+            if (e.target.closest(".edit-btn")) {
+                const btn = e.target.closest(".edit-btn");
                 try {
-                    const tourData = JSON.parse(btn.dataset.json);
-                    openEditModal(tourData);
-                } catch(err) {
-                    console.error("Ошибка парсинга данных тура", err);
-                }
+                    const data = JSON.parse(btn.dataset.json);
+                    openEditModal(data);
+                } catch (err) { console.error(err); }
             }
         });
     }
 
-    // Создание тура (Форма)
+    // СОЗДАНИЕ ТУРА (ГЛАВНАЯ ФОРМА)
     const createForm = document.getElementById("create-tour-form");
     if (createForm) {
         createForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            
+
             const title = document.getElementById("new-title").value;
             const price = document.getElementById("new-price").value;
             const type = document.getElementById("new-type").value;
-            const description = document.getElementById("new-description").value;
-            const isActive = document.getElementById("new-active").checked;
+            const desc = document.getElementById("new-description").value;
+            const active = document.getElementById("new-active").checked;
             const file = document.getElementById("new-image").files[0];
 
             try {
+                // ЛОГИКА ОТПРАВКИ:
+                // Если есть файл -> отправляем FormData
+                // Если нет файла -> отправляем JSON
                 let body;
-                
-                // СТРАТЕГИЯ ОТПРАВКИ:
-                // Если файл есть -> отправляем FormData
-                // Если файла нет -> отправляем JSON (для надежности)
-                
                 if (file) {
                     const fd = new FormData();
                     fd.append('title', title);
                     fd.append('price_from', price);
                     fd.append('type', type);
-                    fd.append('description', description);
-                    fd.append('is_active', isActive);
-                    fd.append('image', file); // 'image' - имя поля на бэкенде
+                    fd.append('description', desc);
+                    fd.append('is_active', active);
+                    fd.append('image', file); // Важно: имя поля 'image'
                     body = fd;
                 } else {
                     body = JSON.stringify({
-                        title, 
-                        price_from: Number(price), 
-                        type, 
-                        description, 
-                        is_active: isActive
+                        title, price_from: Number(price), type, description: desc, is_active: active
                     });
                 }
 
-                await apiFetch("/admin/tours", {
-                    method: "POST",
-                    body: body
-                });
+                await apiFetch("/admin/tours", { method: "POST", body: body });
 
-                showSuccess("Тур успешно создан!");
+                showSuccess("Тур создан!");
                 createForm.reset();
-                if(document.getElementById('file-name')) 
-                    document.getElementById('file-name').textContent = "Файл не выбран";
+                document.getElementById('file-name').textContent = "Файл не выбран";
                 loadTours();
-
             } catch (err) {
-                // Ошибка уже показана
+                // Ошибка покажется в showError
             }
         });
     }
 
-    // 6. МОДАЛЬНОЕ ОКНО (РЕДАКТИРОВАНИЕ)
+    // === МОДАЛЬНОЕ ОКНО ===
+    const modal = document.getElementById("tour-modal");
+    const editForm = document.getElementById("edit-tour-form");
+
     function openEditModal(tour) {
-        if(!modal) return;
         document.getElementById("edit-id").value = tour.id;
-        document.getElementById("edit-title").value = tour.title || "";
-        document.getElementById("edit-type").value = tour.type || "";
-        document.getElementById("edit-price").value = tour.price_from || "";
+        document.getElementById("edit-title").value = tour.title;
+        document.getElementById("edit-type").value = tour.type;
+        document.getElementById("edit-price").value = tour.price_from;
         document.getElementById("edit-description").value = tour.description || "";
-        
         modal.classList.remove("hidden");
     }
 
-    function closeModal() {
-        if(modal) modal.classList.add("hidden");
-    }
-
-    if (modalBackdrop) modalBackdrop.addEventListener("click", closeModal);
-    if (modalCancelBtn) modalCancelBtn.addEventListener("click", closeModal);
+    document.getElementById("modal-cancel-btn").addEventListener("click", () => modal.classList.add("hidden"));
+    document.querySelector(".modal-backdrop").addEventListener("click", () => modal.classList.add("hidden"));
 
     if (editForm) {
         editForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const id = document.getElementById("edit-id").value;
-            
             const data = {
                 title: document.getElementById("edit-title").value,
                 type: document.getElementById("edit-type").value,
                 price_from: Number(document.getElementById("edit-price").value),
                 description: document.getElementById("edit-description").value
             };
-
             try {
-                await apiFetch(`/admin/tours/${id}`, {
-                    method: "PATCH",
-                    body: JSON.stringify(data)
-                });
+                await apiFetch(`/admin/tours/${id}`, { method: "PATCH", body: JSON.stringify(data) });
                 showSuccess("Тур обновлен");
-                closeModal();
+                modal.classList.add("hidden");
                 loadTours();
-            } catch (e) {
-                // Ошибка показана
-            }
+            } catch (e) {}
         });
     }
 
-    // 7. ЗАЯВКИ (BOOKINGS)
+    // === ЗАЯВКИ ===
+    const bookingsListEl = document.getElementById("bookings-list");
     async function loadBookings(filter = "") {
         if (!bookingsListEl) return;
-        bookingsListEl.innerHTML = '<div style="color:#888;">Загрузка заявок...</div>';
-        
+        bookingsListEl.innerHTML = '<div style="color:#888;">Загрузка...</div>';
         try {
-            const qs = filter ? `?status=${filter}` : "";
-            const bookings = await apiFetch(`/admin/bookings${qs}`);
+            const url = filter ? `/admin/bookings?status=${filter}` : `/admin/bookings`;
+            const bookings = await apiFetch(url);
             bookingsListEl.innerHTML = "";
-
             if (!Array.isArray(bookings) || bookings.length === 0) {
                 bookingsListEl.innerHTML = "Нет заявок.";
                 return;
             }
-
             bookings.forEach(b => {
                 const el = document.createElement("div");
                 el.className = "card";
-                el.style.padding = "15px";
-                el.style.borderLeft = `4px solid ${getStatusColor(b.status)}`;
-                
+                el.style.padding = "20px";
                 el.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <strong>#${b.id} ${b.tour_title || 'Тур удален'}</strong>
-                        <span style="font-size:12px; font-weight:bold; color:#555;">${translateStatus(b.status)}</span>
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>#${b.id} ${b.tour_title || ''}</strong>
+                        <span style="font-weight:bold;">${b.status}</span>
                     </div>
-                    <div style="font-size:13px; color:#555; margin-bottom:10px;">
-                        <div>👤 ${b.client_name}</div>
-                        <div>📞 ${b.client_phone}</div>
-                        <div>📅 ${new Date(b.date_time).toLocaleString()}</div>
+                    <div style="margin:10px 0; color:#555; font-size:14px;">
+                        ${b.client_name} (${b.client_phone})
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn-text" style="color:#059669;" onclick="window.updateBooking(${b.id}, 'confirmed')">✔ Подтвердить</button>
-                        <button class="btn-text" style="color:#DC2626;" onclick="window.updateBooking(${b.id}, 'cancelled')">✖ Отменить</button>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-text" style="color:green;" onclick="window.updB(${b.id}, 'confirmed')">✔ Подтвердить</button>
+                        <button class="btn-text" style="color:red;" onclick="window.updB(${b.id}, 'cancelled')">✖ Отменить</button>
                     </div>
                 `;
                 bookingsListEl.appendChild(el);
@@ -324,33 +286,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) {}
     }
 
-    // Глобальная функция для кнопок заявок (упрощенный вариант)
-    window.updateBooking = async (id, status) => {
+    window.updB = async (id, status) => {
         try {
-            await apiFetch(`/admin/bookings/${id}`, {
-                method: "PATCH",
-                body: JSON.stringify({ status })
-            });
-            showSuccess(`Заявка #${id}: ${status}`);
-            // Обновляем текущий вид
-            const activeFilter = document.querySelector(".filter-chip.active");
-            loadBookings(activeFilter ? activeFilter.dataset.status : "");
+            await apiFetch(`/admin/bookings/${id}`, { method: "PATCH", body: JSON.stringify({status}) });
+            loadBookings(document.querySelector(".filter-chip.active").dataset.status);
         } catch (e) {}
     };
 
-    function getStatusColor(s) {
-        if(s === 'confirmed') return '#10B981';
-        if(s === 'cancelled') return '#EF4444';
-        if(s === 'done') return '#3B82F6';
-        return '#F59E0B'; // new
-    }
-    
-    function translateStatus(s) {
-        const dict = { 'new': 'Новая', 'confirmed': 'Подтверждена', 'done': 'Завершена', 'cancelled': 'Отменена' };
-        return dict[s] || s;
-    }
-
-    // Фильтры заявок
     document.querySelectorAll(".filter-chip").forEach(btn => {
         btn.addEventListener("click", () => {
             document.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
@@ -359,14 +301,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 8. НАВИГАЦИЯ МЕНЮ
+    // === НАВИГАЦИЯ ===
     const navItems = document.querySelectorAll(".nav-item");
     const views = document.querySelectorAll(".view");
 
     navItems.forEach(btn => {
         btn.addEventListener("click", () => {
             if (btn.hasAttribute("disabled")) return;
-            
             navItems.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
             
@@ -380,32 +321,21 @@ document.addEventListener("DOMContentLoaded", () => {
             if (viewId === "bookings") loadBookings();
         });
     });
-
-    // Кнопка смены токена
-    document.getElementById("change-token-btn")?.addEventListener("click", () => {
-        localStorage.removeItem("admin_token");
-        location.reload();
-    });
     
-    // Кнопка смены темы
-    const themeBtn = document.getElementById("theme-toggle");
-    if(themeBtn) {
-        themeBtn.addEventListener("click", () => {
-            const b = document.body;
-            if(b.classList.contains("theme-dark")) {
-                b.classList.remove("theme-dark");
-                b.classList.add("theme-light");
-            } else {
-                b.classList.remove("theme-light");
-                b.classList.add("theme-dark");
-            }
-        });
-    }
+    // Смена темы
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+        const b = document.body;
+        if(b.classList.contains("theme-light")) {
+            b.className = "theme-dark";
+        } else {
+            b.className = "theme-light";
+        }
+    });
 
-    // 9. ИНИЦИАЛИЗАЦИЯ
-    if(adminToken) {
-        setStatus("Token Loaded");
-        loadTours(); // Загружаем сразу
+    // === ИНИЦИАЛИЗАЦИЯ ===
+    if (adminToken) {
+        setStatus("Ready");
+        loadTours();
     } else {
         setStatus("No Token");
     }
