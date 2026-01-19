@@ -4,61 +4,124 @@
     <meta charset="UTF-8">
     <title>Админ-панель — Adler Tours</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin.css?v=2">
+    <link rel="stylesheet" href="admin.css?v=3">
 </head>
 <body>
 <div class="admin-layout">
 
+    <!-- ЛЕВОЕ МЕНЮ -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-title">Adler Tours</div>
-            <div class="sidebar-subtitle">Админ-панель</div>
+            <div class="sidebar-brand">TRAVEL SOCHI</div>
+            <div class="sidebar-role">Роль: Администратор</div>
         </div>
+
         <nav class="sidebar-nav">
-            <button class="nav-btn active" data-tab="tours">Туры</button>
-            <button class="nav-btn" data-tab="bookings">Заявки</button>
+            <button class="nav-link active" data-view="dashboard">Dashboard</button>
+            <button class="nav-link" data-view="tours">Туры</button>
+            <button class="nav-link" data-view="bookings">Заявки</button>
         </nav>
+
         <div class="sidebar-footer">
             <button id="change-token-btn" class="btn btn-outline">Сменить токен</button>
         </div>
     </aside>
 
+    <!-- ОСНОВНОЙ ЭКРАН -->
     <main class="main">
         <header class="topbar">
-            <div class="topbar-title">Управление турами и заявками</div>
+            <div class="topbar-title">Dashboard</div>
             <div id="status-indicator" class="topbar-status">Токен не задан</div>
         </header>
 
-        <!-- ВКЛАДКА ТУРОВ -->
-        <section id="tab-tours" class="tab active">
-            <h1>Туры</h1>
-            <p class="hint">Добавляйте и редактируйте карточки туров: название, описание, цены, длительность.</p>
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="view active">
+            <div class="dashboard-grid">
+                <!-- Карточка добавления тура -->
+                <div class="card card-large">
+                    <h1>Добавить тур</h1>
+                    <p class="hint">
+                        Заполните данные тура: название, тип, стоимость и описание.  
+                        Тур появится в каталоге WebApp после сохранения.
+                    </p>
 
-            <div id="tours-list" class="cards-grid"></div>
+                    <form id="create-tour-form" class="form-vertical">
+                        <label class="field">
+                            <span class="field-label">Название тура</span>
+                            <input type="text" id="new-title" placeholder="Например: Джиппинг в Сочи" required>
+                        </label>
 
-            <h2>Добавить тур</h2>
-            <form id="create-tour-form" class="form-grid">
-                <input type="text" id="new-title" placeholder="Название тура" required>
-                <input type="text" id="new-type" placeholder="Тип (jeeping, yacht, excursion)" required>
-                <input type="number" step="0.01" id="new-price" placeholder="Цена от, ₽">
-                <input type="number" id="new-duration" placeholder="Длительность, часов">
-                <textarea id="new-description" placeholder="Описание тура"></textarea>
-                <label class="checkbox">
-                    <input type="checkbox" id="new-active" checked> Активен
-                </label>
-                <button type="submit" class="btn btn-primary">Создать тур</button>
-            </form>
+                        <label class="field">
+                            <span class="field-label">Тип</span>
+                            <input type="text" id="new-type" placeholder="jeeping, yacht, excursion" required>
+                        </label>
+
+                        <div class="form-row">
+                            <label class="field">
+                                <span class="field-label">Цена от, ₽</span>
+                                <input type="number" step="0.01" id="new-price" placeholder="6000">
+                            </label>
+                            <label class="field">
+                                <span class="field-label">Длительность, часов</span>
+                                <input type="number" id="new-duration" placeholder="4">
+                            </label>
+                        </div>
+
+                        <label class="field">
+                            <span class="field-label">Описание тура</span>
+                            <textarea id="new-description"
+                                      placeholder="Кратко: формат тура, основные точки, особенности."></textarea>
+                        </label>
+
+                        <label class="checkbox">
+                            <input type="checkbox" id="new-active" checked>
+                            <span>Активен (показывать в каталоге)</span>
+                        </label>
+
+                        <button type="submit" class="btn btn-primary btn-full">Сохранить</button>
+                    </form>
+                </div>
+
+                <!-- Карточка статистики / заглушка -->
+                <div class="card card-large">
+                    <h1>Заявки за неделю</h1>
+                    <p class="hint">Демо-график. Можно позже связать с реальными данными /admin/bookings.</p>
+                    <div class="chart">
+                        <div class="chart-grid">
+                            <div class="chart-y">
+                                <span>14</span><span>10</span><span>6</span><span>2</span>
+                            </div>
+                            <div class="chart-lines">
+                                <div class="chart-line"></div>
+                                <div id="chart-points" class="chart-points"></div>
+                            </div>
+                        </div>
+                        <div class="chart-x">
+                            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- ВКЛАДКА ЗАЯВОК -->
-        <section id="tab-bookings" class="tab">
+        <!-- ТУРЫ -->
+        <section id="view-tours" class="view">
+            <h1>Туры</h1>
+            <p class="hint">
+                Список туров из базы. Можно отредактировать карточку или скрыть тур из каталога.
+            </p>
+            <div id="tours-list" class="cards-grid"></div>
+        </section>
+
+        <!-- ЗАЯВКИ -->
+        <section id="view-bookings" class="view">
             <h1>Заявки</h1>
             <div class="filters">
                 <button class="filter-btn active" data-status="">Все</button>
                 <button class="filter-btn" data-status="new">Новые</button>
-                <button class="filter-btn" data-status="confirmed">Подтверждённые</button>
-                <button class="filter-btn" data-status="done">Завершённые</button>
-                <button class="filter-btn" data-status="cancelled">Отменённые</button>
+                <button class="filter-btn" data-status="confirmed">Подтв.</button>
+                <button class="filter-btn" data-status="done">Заверш.</button>
+                <button class="filter-btn" data-status="cancelled">Отм.</button>
             </div>
             <div id="bookings-list" class="cards-list"></div>
         </section>
@@ -68,7 +131,7 @@
     </main>
 </div>
 
-<!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ТУРА -->
+<!-- МОДАЛКА РЕДАКТИРОВАНИЯ ТУРА -->
 <div id="tour-modal" class="modal hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-dialog">
@@ -85,7 +148,7 @@
             </label>
 
             <label class="modal-field">
-                <span class="modal-label">Тип (jeeping, yacht, excursion)</span>
+                <span class="modal-label">Тип</span>
                 <input type="text" id="edit-type" required>
             </label>
 
@@ -95,13 +158,13 @@
                     <input type="number" step="0.01" id="edit-price">
                 </label>
                 <label class="modal-field">
-                    <span class="modal-label">Длительность, часов</span>
+                    <span class="modal-label">Длительность, ч</span>
                     <input type="number" id="edit-duration">
                 </label>
             </div>
 
             <label class="modal-field">
-                <span class="modal-label">Описание тура</span>
+                <span class="modal-label">Описание</span>
                 <textarea id="edit-description" rows="4"></textarea>
             </label>
 
@@ -113,6 +176,6 @@
     </div>
 </div>
 
-<script src="admin.js?v=2"></script>
+<script src="admin.js?v=3"></script>
 </body>
 </html>
