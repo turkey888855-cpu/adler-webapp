@@ -2,18 +2,18 @@
     --bg-body: #F5F7FA;
     --bg-sidebar: #FFFFFF;
     --bg-card: #FFFFFF;
-    --bg-input: #E0E0E0; /* Серый фон инпутов как на скрине */
+    --bg-input: #E0E0E0; /* Серый фон полей */
     
     --text-main: #333333;
     --text-muted: #888888;
     
-    --accent-color: #FBBF24; /* Золотистый/Оранжевый */
+    --accent-color: #FBBF24; /* Желтый */
     --accent-hover: #D97706;
-    --accent-light: #FFFBEB; /* Фон активного меню */
+    --accent-light: #FFFBEB;
     
     --radius-card: 24px;
-    --radius-input: 12px;
-    --radius-btn: 12px;
+    --radius-input: 14px;
+    --radius-btn: 14px;
     
     --shadow-card: 0 10px 30px rgba(0,0,0,0.04);
 }
@@ -32,7 +32,7 @@ body.theme-dark {
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     background-color: var(--bg-body);
     color: var(--text-main);
     height: 100vh;
@@ -44,7 +44,7 @@ body {
     height: 100%;
 }
 
-/* --- SIDEBAR --- */
+/* SIDEBAR */
 .sidebar {
     width: 260px;
     background: var(--bg-sidebar);
@@ -66,11 +66,7 @@ body {
     padding-left: 10px;
 }
 
-.nav {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+.nav { display: flex; flex-direction: column; gap: 10px; }
 
 .nav-item {
     background: none;
@@ -80,49 +76,20 @@ body {
     font-size: 16px;
     color: var(--text-muted);
     cursor: pointer;
-    border-radius: 50px; /* Pill shape */
+    border-radius: 50px;
     transition: 0.2s;
     font-weight: 500;
 }
+.nav-item:hover { color: var(--accent-hover); }
+.nav-item.active { background-color: var(--accent-light); color: var(--accent-hover); }
+.nav-item.disabled { opacity: 0.4; cursor: not-allowed; }
 
-.nav-item:hover {
-    color: var(--accent-hover);
-}
+.sidebar-bottom { display: flex; flex-direction: column; gap: 15px; padding-left: 10px; }
+.role-info { font-size: 14px; color: var(--text-muted); }
+.role-highlight { font-weight: 600; color: var(--text-main); }
+.sidebar-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
 
-.nav-item.active {
-    background-color: var(--accent-light);
-    color: var(--accent-hover);
-}
-
-.nav-item.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.sidebar-bottom {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding-left: 10px;
-}
-
-.role-info {
-    font-size: 14px;
-    color: var(--text-muted);
-}
-.role-highlight {
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.sidebar-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-}
-
-/* --- MAIN CONTENT --- */
+/* MAIN */
 .main-content {
     flex: 1;
     padding: 40px 60px;
@@ -132,55 +99,38 @@ body {
 
 .status-badge {
     position: absolute;
-    top: 20px;
-    right: 30px;
-    font-size: 12px;
-    color: var(--text-muted);
-    opacity: 0.6;
+    top: 20px; right: 30px;
+    font-size: 12px; color: var(--text-muted); opacity: 0.6;
 }
 
-.page-title {
-    font-size: 32px;
-    font-weight: 700;
-    margin: 0 0 30px 0;
-}
+.page-title { font-size: 32px; font-weight: 700; margin: 0 0 30px 0; }
 
 .view { display: none; }
 .view.active { display: block; animation: fadeIn 0.3s ease; }
-
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- DASHBOARD GRID --- */
+/* DASHBOARD */
 .dashboard-container {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 30px;
     align-items: start;
 }
-
-@media (max-width: 900px) {
-    .dashboard-container { grid-template-columns: 1fr; }
-}
+@media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } }
 
 .card {
     background: var(--bg-card);
     border-radius: var(--radius-card);
     padding: 30px;
     box-shadow: var(--shadow-card);
+    margin-bottom: 20px;
 }
+.card h2 { margin-top: 0; font-size: 20px; margin-bottom: 25px; }
 
-.card h2 {
-    margin-top: 0;
-    font-size: 20px;
-    margin-bottom: 25px;
-}
-
-/* --- FORM STYLES (Soft UI) --- */
-.soft-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+/* FORMS */
+.soft-form { display: flex; flex-direction: column; gap: 15px; }
+.form-row { display: flex; gap: 15px; }
+.form-row input { flex: 1; }
 
 .input-soft {
     border: none;
@@ -190,26 +140,14 @@ body {
     font-size: 14px;
     color: var(--text-main);
     outline: none;
-    transition: box-shadow 0.2s;
+    width: 100%;
 }
+.input-soft:focus { box-shadow: 0 0 0 2px var(--accent-color); }
+.area-soft { resize: vertical; min-height: 100px; }
 
-.input-soft:focus {
-    box-shadow: 0 0 0 2px var(--accent-color);
-}
-
-.area-soft {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* File Input Custom */
-.file-input-wrapper {
-    display: flex;
-    align-items: center;
-}
-.file-input-wrapper input[type="file"] {
-    display: none;
-}
+/* FILE INPUT */
+.file-input-wrapper { display: flex; align-items: center; }
+.file-input-wrapper input[type="file"] { display: none; }
 .file-label {
     background: var(--bg-input);
     border-radius: var(--radius-input);
@@ -220,21 +158,19 @@ body {
     cursor: pointer;
 }
 .file-btn {
-    background: #D1D5DB; /* Темнее чем инпут */
+    background: #D1D5DB;
     padding: 16px 20px;
     font-size: 14px;
     font-weight: 500;
     color: #333;
 }
-.file-text {
-    padding: 0 15px;
-    font-size: 13px;
-    color: var(--text-muted);
-}
+.file-text { padding: 0 15px; font-size: 13px; color: var(--text-muted); }
 
+.checkbox-wrapper { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); }
+
+/* BUTTONS */
 .btn-primary {
     background: var(--accent-color);
-    color: #fff; /* Или темный текст если нужно */
     color: #111;
     font-weight: 600;
     border: none;
@@ -243,11 +179,8 @@ body {
     cursor: pointer;
     font-size: 15px;
     margin-top: 10px;
-    transition: transform 0.1s;
+    width: 100%;
 }
-
-.btn-primary:active { transform: scale(0.98); }
-
 .btn-text {
     background: none;
     border: none;
@@ -259,179 +192,56 @@ body {
     font-size: 14px;
 }
 
-/* --- CHART STYLES --- */
-.chart-wrapper {
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-}
-.chart-body {
-    flex: 1;
-    display: flex;
-    position: relative;
-}
-.chart-y-axis {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-right: 15px;
-    color: #ccc;
-    font-size: 12px;
-}
-.chart-area {
-    flex: 1;
-    position: relative;
-    border-left: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-}
-.chart-grid-lines {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    z-index: 0;
-}
-.chart-grid-lines .line {
-    height: 1px;
-    background: #f0f0f0;
-    width: 100%;
-}
-.chart-svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-}
-.chart-x-axis {
-    display: flex;
-    justify-content: space-between;
-    padding-left: 30px;
-    margin-top: 10px;
-    color: #ccc;
-    font-size: 12px;
-}
-
-/* --- LISTS & CARDS for TOURS/BOOKINGS --- */
-.grid-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.list-vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.filters-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-.filter-chip {
-    background: var(--bg-input);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: 0.2s;
-}
-.filter-chip.active {
-    background: var(--text-main);
-    color: var(--bg-card);
-}
-
-/* --- TOASTS --- */
-.toast {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    padding: 15px 25px;
-    background: #fff;
+/* TOUR CARD (NEW) */
+.tour-card-header { display: flex; gap: 15px; margin-bottom: 15px; }
+.tour-image {
+    width: 60px; height: 60px;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    z-index: 100;
-    font-weight: 500;
+    object-fit: cover;
+    background-color: #eee;
+}
+.tour-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.tour-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; display: block; }
+.tour-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; width: fit-content; }
+.badge-active { background: #D1FAE5; color: #065F46; }
+.badge-hidden { background: #F3F4F6; color: #9CA3AF; }
+.tour-actions {
+    display: flex; gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;
+}
+
+/* CHART */
+.chart-wrapper { height: 250px; display: flex; flex-direction: column; }
+.chart-body { flex: 1; display: flex; position: relative; }
+.chart-y-axis { display: flex; flex-direction: column; justify-content: space-between; padding-right: 15px; color: #ccc; font-size: 12px; }
+.chart-area { flex: 1; position: relative; border-left: 1px solid #eee; border-bottom: 1px solid #eee; }
+.chart-grid-lines { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; }
+.chart-grid-lines .line { height: 1px; background: #f0f0f0; width: 100%; }
+.chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+.chart-x-axis { display: flex; justify-content: space-between; padding-left: 30px; margin-top: 10px; color: #ccc; font-size: 12px; }
+
+/* LISTS */
+.grid-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.list-vertical { display: flex; flex-direction: column; gap: 15px; }
+.filters-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+.filter-chip {
+    background: var(--bg-input); border: none; padding: 8px 16px;
+    border-radius: 50px; cursor: pointer; font-size: 13px; transition: 0.2s;
+}
+.filter-chip.active { background: var(--text-main); color: var(--bg-card); }
+
+/* TOAST & MODAL */
+.toast {
+    position: fixed; bottom: 30px; right: 30px; padding: 15px 25px;
+    background: #fff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 100;
 }
 .toast-error { border-left: 4px solid #ef4444; color: #ef4444; }
 .toast-success { border-left: 4px solid #10b981; color: #10b981; }
 .hidden { display: none !important; }
 
-/* --- MODAL --- */
-.modal {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(2px);
-}
+.modal { position: fixed; inset: 0; z-index: 200; display: flex; justify-content: center; align-items: center; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); }
 .modal-content {
-    background: var(--bg-card);
-    width: 400px;
-    padding: 30px;
-    border-radius: 20px;
-    position: relative;
-    z-index: 201;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    background: var(--bg-card); width: 400px; padding: 30px;
+    border-radius: 20px; position: relative; z-index: 201; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
 }
-.modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 10px;
-}
-/* Добавить в admin.css */
-
-.tour-card-header {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.tour-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    object-fit: cover;
-    background-color: #eee;
-}
-
-.tour-info {
-    flex: 1;
-}
-
-.tour-title {
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 4px;
-    display: block;
-}
-
-.tour-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-}
-.badge-active { background: #D1FAE5; color: #065F46; }
-.badge-hidden { background: #F3F4F6; color: #9CA3AF; }
-
-.tour-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
+.modal-buttons { display: flex; justify-content: flex-end; gap: 15px; margin-top: 15px; }
