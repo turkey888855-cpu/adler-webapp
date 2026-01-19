@@ -47,9 +47,9 @@ const TOUR_IMAGES = {
   excursion: "img/excursion.jpg",
 };
 const TOUR_TYPE_LABEL = {
-  jeeping: "Джиппинг",
-  yacht: "Морская прогулка",
-  excursion: "Экскурсия",
+  jeeping: "ADVENTURE",
+  yacht: "VIP",
+  excursion: "POPULAR",
 };
 const DEFAULT_IMAGE = "img/default-tour.jpg";
 
@@ -87,7 +87,7 @@ function renderTours(tours) {
     const card = document.createElement("article");
     card.className = "tour-card";
 
-    // Блок фото
+    // Фото
     const imageWrap = document.createElement("div");
     imageWrap.className = "tour-image";
 
@@ -104,36 +104,47 @@ function renderTours(tours) {
     const content = document.createElement("div");
     content.className = "tour-content";
 
+    // бейдж
+    const badge = document.createElement("div");
+    badge.className = "tour-badge";
+    if (tour.type === "jeeping") badge.classList.add("tour-badge--jeeping");
+    if (tour.type === "yacht") badge.classList.add("tour-badge--yacht");
+    if (tour.type === "excursion") badge.classList.add("tour-badge--excursion");
+    badge.textContent = TOUR_TYPE_LABEL[tour.type] || "TOUR";
+
     const title = document.createElement("div");
     title.className = "tour-title";
     title.textContent = tour.title;
 
     const meta = document.createElement("div");
     meta.className = "tour-meta";
-    const price = tour.price_from ? `${tour.price_from} ₽` : "Цена по запросу";
-    const duration = tour.duration_hours
-      ? `${tour.duration_hours} ч`
-      : "Длительность не указана";
-    meta.textContent = `${price} · ${duration}`;
+    meta.textContent = tour.description
+      ? tour.description.split(".")[0]
+      : "";
 
-    const desc = document.createElement("div");
-    desc.className = "tour-description";
-    desc.textContent = tour.description || "";
+    const footer = document.createElement("div");
+    footer.className = "tour-footer";
 
-    const actions = document.createElement("div");
-    actions.className = "tour-actions";
+    const priceEl = document.createElement("div");
+    priceEl.className = "tour-price";
+    if (tour.price_from) {
+      priceEl.innerHTML = `<span>от</span> ${tour.price_from.toLocaleString("ru-RU")} ₽`;
+    } else {
+      priceEl.textContent = "Цена по запросу";
+    }
 
     const btn = document.createElement("button");
-    btn.textContent = "Забронировать";
+    btn.textContent = "Смотреть";
     btn.className = "btn btn-primary";
     btn.onclick = () => openBookingForm(tour);
 
-    actions.appendChild(btn);
+    footer.appendChild(priceEl);
+    footer.appendChild(btn);
 
+    content.appendChild(badge);
     content.appendChild(title);
-    content.appendChild(meta);
-    if (tour.description) content.appendChild(desc);
-    content.appendChild(actions);
+    if (meta.textContent) content.appendChild(meta);
+    content.appendChild(footer);
 
     card.appendChild(imageWrap);
     card.appendChild(content);
@@ -158,10 +169,12 @@ function openBookingForm(tour) {
     bookingTourImageEl.alt = tour.title;
   }
   if (bookingTourTypeEl) {
-    bookingTourTypeEl.textContent = TOUR_TYPE_LABEL[tour.type] || "Тур";
+    bookingTourTypeEl.textContent = TOUR_TYPE_LABEL[tour.type] || "TOUR";
   }
   if (bookingTourMetaEl) {
-    const price = tour.price_from ? `${tour.price_from} ₽` : "Цена по запросу";
+    const price = tour.price_from
+      ? `от ${tour.price_from.toLocaleString("ru-RU")} ₽`
+      : "Цена по запросу";
     const duration = tour.duration_hours
       ? `${tour.duration_hours} ч`
       : "Длительность не указана";
