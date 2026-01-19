@@ -4,26 +4,30 @@
     <meta charset="UTF-8">
     <title>Админ-панель — Adler Tours</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin.css?v=4">
+    <link rel="stylesheet" href="admin.css?v=6">
 </head>
-<body>
+<body class="theme-light">
 <div class="admin-layout">
 
+    <!-- ЛЕВАЯ ПАНЕЛЬ -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-title">TRAVEL SOCHI</div>
-            <div class="sidebar-subtitle">Админ-панель</div>
+            <div class="sidebar-brand">TRAVEL SOCHI</div>
+            <div class="sidebar-role">Роль: Администратор</div>
         </div>
         <nav class="sidebar-nav">
             <button class="nav-link active" data-view="dashboard">Dashboard</button>
             <button class="nav-link" data-view="tours">Туры</button>
             <button class="nav-link" data-view="bookings">Заявки</button>
+            <button class="nav-link disabled" data-view="clients" disabled>Клиенты</button>
         </nav>
         <div class="sidebar-footer">
             <button id="change-token-btn" class="btn btn-outline">Сменить токен</button>
+            <button id="theme-toggle" class="btn btn-ghost">Сменить тему</button>
         </div>
     </aside>
 
+    <!-- ПРАВАЯ ЧАСТЬ -->
     <main class="main">
         <header class="topbar">
             <div class="topbar-title">Dashboard</div>
@@ -33,6 +37,7 @@
         <!-- DASHBOARD -->
         <section id="view-dashboard" class="view active">
             <div class="dashboard-grid">
+                <!-- ДОБАВИТЬ ТУР -->
                 <div class="card card-large">
                     <h1>Добавить тур</h1>
                     <p class="hint">
@@ -49,16 +54,14 @@
                             <span class="field-label">Тип</span>
                             <input type="text" id="new-type" placeholder="jeeping, yacht, excursion" required>
                         </label>
-                        <div class="form-row">
-                            <label class="field">
-                                <span class="field-label">Цена от, ₽</span>
-                                <input type="number" step="0.01" id="new-price" placeholder="6000">
-                            </label>
-                            <label class="field">
-                                <span class="field-label">Длительность, часов</span>
-                                <input type="number" id="new-duration" placeholder="4">
-                            </label>
-                        </div>
+                        <label class="field">
+                            <span class="field-label">Цена от, ₽</span>
+                            <input type="number" step="0.01" id="new-price" placeholder="6000">
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Длительность, ч</span>
+                            <input type="number" id="new-duration" placeholder="4">
+                        </label>
                         <label class="field">
                             <span class="field-label">Описание тура</span>
                             <textarea id="new-description"
@@ -72,9 +75,12 @@
                     </form>
                 </div>
 
+                <!-- ГРАФИК ЗАЯВОК -->
                 <div class="card card-large">
                     <h1>Заявки за неделю</h1>
-                    <p class="hint">Демо-график. Позже можно привязать к /admin/bookings.</p>
+                    <p class="hint">
+                        Демо-график. Позже можно привязать к реальным данным /admin/bookings.
+                    </p>
                     <div class="chart">
                         <div class="chart-grid">
                             <div class="chart-y">
@@ -96,9 +102,7 @@
         <!-- ТУРЫ -->
         <section id="view-tours" class="view">
             <h1>Туры</h1>
-            <p class="hint">
-                Список туров из базы. Можно отредактировать карточку или скрыть тур из каталога.
-            </p>
+            <p class="hint">Редактируйте существующие туры или скрывайте их из каталога.</p>
             <div id="tours-list" class="cards-grid"></div>
         </section>
 
@@ -165,6 +169,6 @@
     </div>
 </div>
 
-<script src="admin.js?v=4"></script>
+<script src="admin.js?v=6"></script>
 </body>
 </html>
