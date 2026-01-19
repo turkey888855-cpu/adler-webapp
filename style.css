@@ -1,44 +1,44 @@
 :root {
-    /* DARK THEME */
+    /* LIGHT THEME (по умолчанию) */
+    --bg: #e5e7eb;
+    --panel: #ffffff;
+    --panel-soft: #f9fafb;
+    --panel-strong: #ffffff;
+
+    --accent: #fbbf24;         /* жёлто-оранжевый, как на примере */
+    --accent-soft: #facc15;
+    --accent-strong: #f59e0b;
+    --accent-secondary: #22c55e;
+
+    --text-main: #111827;
+    --text-muted: #6b7280;
+
+    --border-soft: rgba(148, 163, 184, 0.6);
+    --radius-lg: 26px;
+    --radius-md: 22px;
+
+    --shadow-strong: 0 26px 60px rgba(15, 23, 42, 0.18);
+    --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.16);
+}
+
+/* DARK THEME */
+.theme-dark {
     --bg: #020617;
     --panel: rgba(15, 23, 42, 0.98);
     --panel-soft: rgba(15, 23, 42, 0.94);
     --panel-strong: rgba(15, 23, 42, 0.98);
 
-    --accent: #38bdf8;
-    --accent-soft: #0ea5e9;
-    --accent-strong: #0284c7;
+    --accent: #fbbf24;
+    --accent-soft: #facc15;
+    --accent-strong: #f59e0b;
     --accent-secondary: #22c55e;
 
     --text-main: #e5e7eb;
     --text-muted: #9ca3af;
 
     --border-soft: rgba(148, 163, 184, 0.5);
-    --radius-lg: 18px;
-    --radius-md: 14px;
-
-    --shadow-strong: 0 26px 60px rgba(15, 23, 42, 0.98);
-    --shadow-soft: 0 16px 34px rgba(15, 23, 42, 0.9);
-}
-
-/* LIGHT THEME */
-.theme-light {
-    --bg: #f3f4f6;
-    --panel: #ffffff;
-    --panel-soft: #f9fafb;
-    --panel-strong: #ffffff;
-
-    --accent: #2563eb;
-    --accent-soft: #3b82f6;
-    --accent-strong: #1d4ed8;
-    --accent-secondary: #10b981;
-
-    --text-main: #111827;
-    --text-muted: #6b7280;
-
-    --border-soft: rgba(148, 163, 184, 0.6);
-    --shadow-strong: 0 24px 50px rgba(15, 23, 42, 0.25);
-    --shadow-soft: 0 14px 32px rgba(15, 23, 42, 0.2);
+    --shadow-strong: 0 26px 60px rgba(15, 23, 42, 0.95);
+    --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.9);
 }
 
 *,
@@ -56,8 +56,7 @@ html, body {
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
     background:
-        radial-gradient(circle at top left, rgba(56, 189, 248, 0.24), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.24), transparent 60%),
+        linear-gradient(to bottom, #f3f4f6, #e5e7eb),
         var(--bg);
     color: var(--text-main);
 }
@@ -80,11 +79,14 @@ body {
     gap: 10px;
     padding: 10px 14px;
     border-radius: 999px;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
-    border: 1px solid rgba(148, 163, 184, 0.5);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(14px);
-    margin-bottom: 16px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.95));
+    border: 1px solid rgba(209, 213, 219, 0.8);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+.theme-dark .app-header {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.9));
+    border-color: rgba(148, 163, 184, 0.6);
 }
 
 .brand {
@@ -97,13 +99,17 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 999px;
-    background: radial-gradient(circle at 20% 20%, var(--accent-soft), var(--accent-strong));
+    background: radial-gradient(circle at 20% 20%, #f97316, #b45309);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 16px;
-    color: #0b1120;
+    font-weight: 800;
+    font-size: 17px;
+    color: #fefce8;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
+}
+
+.theme-dark .brand-logo {
     box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.8);
 }
 
@@ -135,8 +141,8 @@ body {
     height: 26px;
     padding: 2px;
     border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.55);
-    background: rgba(15, 23, 42, 0.96);
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    background: rgba(15, 23, 42, 0.95);
     cursor: pointer;
 }
 
@@ -147,9 +153,9 @@ body {
     width: 48px;
     height: 22px;
     border-radius: 999px;
-    background: radial-gradient(circle at 20% 20%, var(--accent-soft), var(--accent-strong));
-    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.75);
-    transition: transform 0.18s ease;
+    background: radial-gradient(circle at 20% 20%, #facc15, #f97316);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.85);
+    transition: transform 0.2s ease;
 }
 
 .theme-toggle-label {
@@ -157,10 +163,18 @@ body {
     z-index: 1;
     font-size: 11px;
     padding: 0 6px;
-    color: var(--text-muted);
+    color: #e5e7eb;
 }
 
-.theme-light .theme-toggle-thumb {
+.theme-light .theme-toggle {
+    background: #f9fafb;
+}
+
+.theme-light .theme-toggle-label {
+    color: #6b7280;
+}
+
+.theme-dark .theme-toggle-thumb {
     transform: translateX(44px);
 }
 
@@ -169,33 +183,34 @@ body {
 .app-main {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
 }
 
-/* PANEL (каталог) */
+/* PANEL */
 
 .panel {
+    margin-top: 12px;
     border-radius: var(--radius-lg);
-    padding: 14px 14px 18px;
-    border: 1px solid var(--border-soft);
+    padding: 16px 16px 18px;
+    border: 1px solid rgba(209, 213, 219, 0.9);
     background:
-        radial-gradient(circle at top, rgba(15, 118, 110, 0.4), transparent 60%),
-        linear-gradient(145deg, var(--panel), var(--panel-soft));
-    box-shadow: var(--shadow-strong);
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.9), rgba(249, 250, 251, 1));
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
 }
 
-.theme-light .panel {
+.theme-dark .panel {
     background:
-        radial-gradient(circle at top, rgba(191, 219, 254, 0.9), rgba(249, 250, 251, 1));
+        radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
+    border-color: rgba(55, 65, 81, 0.9);
 }
 
 .panel-header h1 {
     margin: 0 0 4px;
-    font-size: 19px;
+    font-size: 20px;
 }
 
 .panel-header p {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     font-size: 13px;
     color: var(--text-muted);
 }
@@ -209,7 +224,7 @@ body {
 }
 
 .status-text--error {
-    color: #fecaca;
+    color: #b91c1c;
 }
 
 /* TOURS GRID & CARDS */
@@ -217,35 +232,33 @@ body {
 .tours-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 12px;
 }
+
+/* карточка как у топ-агентств */
 
 .tour-card {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-md);
     background:
-        radial-gradient(circle at top left, rgba(56, 189, 248, 0.3), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.25), transparent 60%),
-        var(--panel-soft);
-    border: 1px solid rgba(148, 163, 184, 0.7);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(229, 231, 235, 0.98));
     box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
-    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
 }
 
-.tour-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 44px rgba(15, 23, 42, 0.95);
-    border-color: rgba(96, 165, 250, 0.9);
+.theme-dark .tour-card {
+    background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.99), rgba(15, 23, 42, 0.95));
 }
 
 /* IMAGE */
 
 .tour-image {
     position: relative;
-    height: 140px;
+    height: 160px;
     overflow: hidden;
 }
 
@@ -253,47 +266,82 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.03);
-    transition: transform 0.32s ease;
+    transform: scale(1.05);
+    transition: transform 0.35s ease;
 }
 
 .tour-card:hover .tour-image img {
-    transform: scale(1.09);
+    transform: scale(1.12);
 }
 
 .tour-image-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(15, 23, 42, 0.96), transparent 60%);
+    background: linear-gradient(to bottom,
+      rgba(15, 23, 42, 0.05),
+      rgba(15, 23, 42, 0.45));
 }
 
 /* CONTENT */
 
 .tour-content {
-    padding: 10px 10px 12px;
+    padding: 12px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
+/* бейдж типа */
+
+.tour-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #fbbf24;
+    color: #1f2937;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tour-badge--jeeping { background: #16a34a; color: #ecfdf3; }
+.tour-badge--yacht { background: #f97316; color: #fff7ed; }
+.tour-badge--excursion { background: #0ea5e9; color: #ecfeff; }
+
 .tour-title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 3px;
 }
 
 .tour-meta {
     font-size: 12px;
-    color: var(--accent-soft);
-    margin-bottom: 6px;
+    color: var(--text-muted);
 }
 
 .tour-description {
     font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 8px;
 }
 
-.tour-actions {
+/* PRICE + BUTTON */
+
+.tour-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.tour-price {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tour-price span {
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 /* BUTTONS */
@@ -302,30 +350,35 @@ body {
     border: none;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     border-radius: 999px;
-    padding: 7px 14px;
+    padding: 7px 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
 }
 
 .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-    color: #0b1120;
-    box-shadow: 0 12px 26px rgba(56, 189, 248, 0.5);
+    color: #111827;
+    box-shadow: 0 10px 24px rgba(248, 181, 71, 0.6);
 }
 
 .btn-primary:active {
     transform: translateY(1px);
-    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.9);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.85);
 }
 
 .btn-secondary {
     background: transparent;
     color: var(--text-main);
     border: 1px solid var(--border-soft);
+}
+
+/* HOVER CARD */
+
+.tour-card:hover {
+    transform: translateY(-4px);
 }
 
 /* BOOKING OVERLAY */
@@ -342,8 +395,9 @@ body {
 .booking-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(6px);
+    animation: fadeIn 0.2s ease-out;
 }
 
 .booking-panel {
@@ -351,31 +405,32 @@ body {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
-    border-radius: 18px 18px 0 0;
+    border-radius: 26px 26px 0 0;
     background:
-        radial-gradient(circle at top, rgba(8, 47, 73, 0.9), transparent 60%),
-        linear-gradient(145deg, var(--panel-strong), #020617);
-    border: 1px solid rgba(45, 212, 191, 0.7);
-    box-shadow: var(--shadow-strong);
-    padding: 10px 14px 14px;
+        linear-gradient(180deg, #ffffff, #e5e7eb);
+    box-shadow: 0 -16px 40px rgba(15, 23, 42, 0.3);
+    padding: 12px 16px 16px;
+    animation: slideUp 0.25s ease-out;
+}
+
+.theme-dark .booking-panel {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
 }
 
 /* BOOKING HEADER */
 
 .booking-panel-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 8px;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .back-btn {
     background: none;
     border: none;
-    color: var(--accent);
+    color: var(--text-muted);
     font-size: 13px;
-    padding: 0;
     cursor: pointer;
 }
 
@@ -398,12 +453,11 @@ body {
 }
 
 .booking-summary-image {
-    flex: 0 0 88px;
-    height: 60px;
-    border-radius: 12px;
+    flex: 0 0 100px;
+    height: 66px;
+    border-radius: 18px;
     overflow: hidden;
-    border: 1px solid rgba(148, 163, 184, 0.6);
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.8);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.5);
 }
 
 .booking-summary-image img {
@@ -415,20 +469,20 @@ body {
 .booking-summary-info {
     display: flex;
     flex-direction: column;
-    gap: 3px;
     justify-content: center;
+    gap: 3px;
 }
 
 .booking-summary-type {
     display: inline-flex;
     padding: 2px 8px;
     border-radius: 999px;
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(148, 163, 184, 0.6);
+    background: var(--accent-strong);
+    color: #fefce8;
     font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--accent-soft);
 }
 
 .booking-summary-meta {
@@ -441,7 +495,7 @@ body {
     color: var(--text-muted);
 }
 
-/* INTRO & PROGRESS */
+/* INTRO + PROGRESS */
 
 .booking-intro {
     margin: 4px 0 8px;
@@ -453,10 +507,13 @@ body {
     width: 100%;
     height: 4px;
     border-radius: 999px;
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(148, 163, 184, 0.4);
-    margin-bottom: 10px;
+    background: rgba(229, 231, 235, 0.9);
     overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.theme-dark .booking-progress {
+    background: rgba(15, 23, 42, 0.9);
 }
 
 .booking-progress-bar {
@@ -466,8 +523,8 @@ body {
     height: 100%;
     width: 0;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--accent-secondary), var(--accent));
-    transition: width 0.18s ease;
+    background: linear-gradient(90deg, #22c55e, var(--accent));
+    transition: width 0.2s ease;
 }
 
 /* FORM */
@@ -476,7 +533,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 4px;
 }
 
 .form-row {
@@ -494,35 +550,39 @@ body {
 .field input,
 .field textarea {
     width: 100%;
-    padding: 7px 9px;
-    border-radius: 10px;
+    padding: 7px 10px;
+    border-radius: 12px;
     border: 1px solid var(--border-soft);
-    background: rgba(15, 23, 42, 0.94);
+    background: #f9fafb;
     color: var(--text-main);
     font-size: 13px;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.08s ease;
 }
 
-.theme-light .field input,
-.theme-light .field textarea {
-    background: rgba(255, 255, 255, 0.97);
+.theme-dark .field input,
+.theme-dark .field textarea {
+    background: rgba(15, 23, 42, 0.96);
+    color: #e5e7eb;
 }
 
 .field input:focus,
 .field textarea:focus {
     border-color: var(--accent-soft);
-    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
-    background: rgba(15, 23, 42, 1);
+    box-shadow: 0 0 0 1px rgba(248, 181, 71, 0.9);
     transform: translateY(-1px);
+    background: #ffffff;
+}
+
+.theme-dark .field input:focus,
+.theme-dark .field textarea:focus {
+    background: rgba(15, 23, 42, 1);
 }
 
 .field textarea {
-    min-height: 60px;
     resize: vertical;
+    min-height: 60px;
 }
-
-/* field states */
 
 .field--filled .field-label {
     color: var(--accent-secondary);
@@ -537,21 +597,23 @@ body {
 
 .form-alert {
     font-size: 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 6px 8px;
 }
 
 .form-alert--error {
-    background: rgba(248, 113, 113, 0.18);
-    color: #fecaca;
-    border: 1px solid rgba(248, 113, 113, 0.7);
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
 }
 
 .form-alert--success {
-    background: rgba(34, 197, 94, 0.2);
-    color: #bbf7d0;
-    border: 1px solid rgba(34, 197, 94, 0.7);
+    background: #ecfdf5;
+    color: #166534;
+    border: 1px solid #bbf7d0;
 }
+
+/* FORM ACTIONS */
 
 .form-actions {
     display: flex;
@@ -563,6 +625,28 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+/* ANIMATIONS */
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0.4;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* RESPONSIVE */
